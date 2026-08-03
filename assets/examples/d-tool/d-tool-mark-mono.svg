@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">D tool monochrome logo</title>
+  <desc id="desc">A bold letter D whose stem ends in a download arrow and whose counter is a video play triangle.</desc>
+  <defs>
+    <mask id="play-cutout">
+      <rect width="1024" height="1024" fill="white"/>
+      <path d="M344 300 684 512 344 724Z" fill="black"/>
+    </mask>
+  </defs>
+  <path d="M160 112h312c224 0 376 160 376 400S696 912 472 912H350V742h92L260 958 78 742h82Z" fill="#111827" mask="url(#play-cutout)"/>
+</svg>

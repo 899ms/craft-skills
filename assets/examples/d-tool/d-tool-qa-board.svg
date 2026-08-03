@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">D tool semantic-fusion QA board</title>
+  <desc id="desc">The revised D tool mark shown in solid black, reverse, app-icon crop, native raster sizes, and outer silhouette.</desc>
+  <defs>
+    <mask id="play-cutout" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024">
+      <rect width="1024" height="1024" fill="white"/>
+      <path d="M344 300 684 512 344 724Z" fill="black"/>
+    </mask>
+    <symbol id="mark" viewBox="0 0 1024 1024">
+      <path d="M160 112h312c224 0 376 160 376 400S696 912 472 912H350V742h92L260 958 78 742h82Z" fill="currentColor" mask="url(#play-cutout)"/>
+    </symbol>
+    <symbol id="silhouette" viewBox="0 0 1024 1024">
+      <path d="M160 112h312c224 0 376 160 376 400S696 912 472 912H350V742h92L260 958 78 742h82Z" fill="currentColor"/>
+    </symbol>
+  </defs>
+  <rect width="1200" height="900" fill="#F3F4F6"/>
+  <text x="60" y="66" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="30" font-weight="700" fill="#111827">D tool — semantic fusion QA</text>
+  <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="17" fill="#6B7280">D stem = download arrow · D counter = play triangle</text>
+  <rect x="60" y="135" width="320" height="320" rx="24" fill="white"/>
+  <use href="#mark" x="108" y="183" width="224" height="224" color="#111827"/>
+  <text x="84" y="430" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="17" fill="#374151">Solid black</text>
+  <rect x="440" y="135" width="320" height="320" rx="24" fill="#111827"/>
+  <use href="#mark" x="488" y="183" width="224" height="224" color="white"/>
+  <text x="464" y="430" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="17" fill="#D1D5DB">Reversed</text>
+  <rect x="820" y="135" width="320" height="320" rx="72" fill="#355CFF"/>
+  <use href="#mark" x="868" y="183" width="224" height="224" color="white"/>
+  <text x="844" y="430" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="17" fill="white">App-icon crop</text>
+  <rect x="60" y="495" width="700" height="330" rx="24" fill="white"/>
+  <text x="84" y="535" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="600" fill="#111827">Raster-size row</text>
+  <g color="#111827">
+    <use href="#mark" x="92" y="590" width="16" height="16"/>
+    <use href="#mark" x="154" y="586" width="24" height="24"/>
+    <use href="#mark" x="224" y="582" width="32" height="32"/>
+    <use href="#mark" x="302" y="566" width="64" height="64"/>
+    <use href="#mark" x="406" y="534" width="128" height="128"/>
+  </g>
+  <g font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" fill="#6B7280" text-anchor="middle">
+    <text x="100" y="650">16</text><text x="166" y="650">24</text><text x="240" y="650">32</text><text x="334" y="650">64</text><text x="470" y="690">128 px</text>
+  </g>
+  <text x="84" y="775" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#374151">Check: arrow point and triangular counter remain open.</text>
+  <rect x="820" y="495" width="320" height="330" rx="24" fill="white"/>
+  <text x="844" y="535" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="600" fill="#111827">Outer silhouette</text>
+  <use href="#silhouette" x="870" y="570" width="220" height="220" color="#111827"/>
+</svg>

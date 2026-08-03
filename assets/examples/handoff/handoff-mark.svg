@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Handoff Relay Joint H mark</title>
+  <desc id="desc">Two equal vertical collaborators form an H through a sender wedge and matching receiver socket separated by one diagonal handoff seam.</desc>
+  <g fill="currentColor">
+    <rect x="12" y="8" width="12" height="48" rx="6"/>
+    <path d="M20 26H28L34 32L28 38H20Z"/>
+    <rect x="40" y="8" width="12" height="48" rx="6"/>
+    <path d="M32 26H44V38H32L38 32Z"/>
+  </g>
+</svg>

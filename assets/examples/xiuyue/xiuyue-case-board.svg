@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">岫页 Sheltered Page concept and review board</title>
+  <desc id="desc">An original page-and-mountain symbol, construction explanation, unchanged Chinese wordmark, responsive sizes, and native-review boundary.</desc>
+  <defs>
+    <symbol id="main" viewBox="0 0 64 64">
+      <path fill="currentColor" d="M10 20 22 9 29 20C27.5 25.5 26 31.5 26 38c0 5.5 2.2 9.2 6 12 3.8-2.8 6-6.5 6-12 0-6.5-1.5-12.5-3-18l8-9 11 9v30c0 3.314-2.686 6-6 6H16c-3.314 0-6-2.686-6-6Z"/>
+    </symbol>
+    <symbol id="micro" viewBox="0 0 64 64">
+      <path fill="currentColor" d="M8 22 21 8 28 20c-2 5-4 11-4 17 0 5.5 3 9 8 12 5-3 8-6.5 8-12 0-6-2-12-4-17l8-10 12 12v27c0 3.866-3.134 7-7 7H15c-3.866 0-7-3.134-7-7Z"/>
+    </symbol>
+  </defs>
+
+  <rect width="1200" height="900" fill="#F4F1EA"/>
+  <text x="60" y="68" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif" font-size="31" font-weight="700" fill="#171714">岫页 / Sheltered Page</text>
+  <text x="60" y="102" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="17" fill="#6F6A60">fictional teaching case · symbol route · Chinese glyphs remain unmodified</text>
+  <rect x="875" y="48" width="265" height="42" rx="21" fill="#FFE8C2"/>
+  <text x="1007.5" y="75" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="700" fill="#7B4800">CONCEPT ONLY · NOT SCREENED</text>
+
+  <rect x="60" y="135" width="500" height="470" rx="28" fill="#FFFDF8"/>
+  <use href="#main" x="130" y="175" width="360" height="360" color="#171714"/>
+  <text x="84" y="555" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#5E594F">One contour: page plane + mountain shoulders.</text>
+  <text x="84" y="580" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#5E594F">One opening: page seam + sheltered valley.</text>
+
+  <rect x="600" y="135" width="540" height="470" rx="28" fill="#FFFDF8"/>
+  <text x="628" y="176" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="19" font-weight="700" fill="#171714">Shared geometry</text>
+  <use href="#main" x="632" y="205" width="260" height="260" color="#171714"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif" font-size="16">
+    <circle cx="740" cy="244" r="6" fill="#B55D19"/>
+    <path d="M746 244H925" stroke="#B55D19" stroke-width="2"/>
+    <text x="942" y="250" fill="#4A453D">山肩：同一外轮廓</text>
+    <circle cx="762" cy="344" r="6" fill="#376F68"/>
+    <path d="M768 344H925" stroke="#376F68" stroke-width="2"/>
+    <text x="942" y="350" fill="#4A453D">藏隙：谷口也是页间开口</text>
+    <circle cx="762" cy="420" r="6" fill="#355CFF"/>
+    <path d="M768 420H925" stroke="#355CFF" stroke-width="2"/>
+    <text x="942" y="426" fill="#4A453D">实体桥：保持一个标志</text>
+  </g>
+  <text x="628" y="505" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#6F6A60">No spine line, sun, fold corner, seal frame,</text>
+  <text x="628" y="530" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#6F6A60">or altered Chinese radical is added.</text>
+
+  <rect x="60" y="645" width="650" height="195" rx="24" fill="#FFFDF8"/>
+  <text x="84" y="682" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="700" fill="#171714">Responsive size strip</text>
+  <g color="#171714">
+    <use href="#micro" x="88" y="724" width="16" height="16"/>
+    <use href="#main" x="146" y="720" width="24" height="24"/>
+    <use href="#main" x="214" y="716" width="32" height="32"/>
+    <use href="#main" x="294" y="700" width="64" height="64"/>
+    <use href="#main" x="398" y="668" width="128" height="128"/>
+  </g>
+  <g font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" fill="#6F6A60" text-anchor="middle">
+    <text x="96" y="782">16 micro</text>
+    <text x="158" y="782">24</text>
+    <text x="230" y="782">32</text>
+    <text x="326" y="782">64</text>
+    <text x="462" y="816">128 px</text>
+  </g>
+
+  <rect x="750" y="645" width="390" height="195" rx="24" fill="#171714"/>
+  <use href="#main" x="782" y="681" width="112" height="112" color="#FFFDF8"/>
+  <text x="922" y="732" font-family="'PingFang SC', 'Noto Sans CJK SC', sans-serif" font-size="46" font-weight="500" fill="#FFFDF8">岫页</text>
+  <text x="922" y="764" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" fill="#CBC4B8">U+5CAB · U+9875</text>
+  <text x="922" y="785" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" fill="#CBC4B8">unmodified live type</text>
+  <text x="774" y="812" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" fill="#E2DDD4">Font choice is provisional.</text>
+  <text x="774" y="832" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" fill="#E2DDD4">Native wordmark review is pending.</text>
+
+  <text x="60" y="878" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" fill="#7B4800">Rendered artifact inspected · native/cultural review pending · no originality or trademark claim.</text>
+</svg>

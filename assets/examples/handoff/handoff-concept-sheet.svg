@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 960" role="img" aria-labelledby="title desc">
+  <title id="title">Handoff semantic-fusion concept sheet</title>
+  <desc id="desc">Six monochrome Handoff app-icon concept families. Relay Joint H is selected for prototyping. The sheet is concept-stage and prior-art screening has not been run.</desc>
+  <defs>
+    <symbol id="relay" viewBox="0 0 64 64">
+      <g fill="currentColor">
+        <rect x="12" y="8" width="12" height="48" rx="6"/>
+        <path d="M20 26H28L34 32L28 38H20Z"/>
+        <rect x="40" y="8" width="12" height="48" rx="6"/>
+        <path d="M32 26H44V38H32L38 32Z"/>
+      </g>
+    </symbol>
+    <symbol id="bridge" viewBox="0 0 64 64">
+      <g fill="currentColor">
+        <rect x="10" y="8" width="12" height="48" rx="5"/>
+        <rect x="42" y="8" width="12" height="48" rx="5"/>
+        <path d="M18 26H39V21L49 32L39 43V38H18Z"/>
+      </g>
+    </symbol>
+    <symbol id="step" viewBox="0 0 64 64">
+      <g fill="currentColor">
+        <rect x="10" y="8" width="12" height="48" rx="5"/>
+        <rect x="42" y="8" width="12" height="48" rx="5"/>
+        <path d="M18 24H34V30H46V40H30V34H18Z"/>
+      </g>
+    </symbol>
+    <symbol id="dovetail" viewBox="0 0 64 64">
+      <g fill="currentColor">
+        <path d="M10 8H22V25H31L38 32L31 39H22V56H10Z"/>
+        <path d="M54 8H42V25H35L42 32L35 39H42V56H54Z"/>
+      </g>
+    </symbol>
+    <symbol id="node" viewBox="0 0 64 64">
+      <g fill="currentColor">
+        <rect x="10" y="8" width="12" height="48" rx="5"/>
+        <rect x="42" y="8" width="12" height="48" rx="5"/>
+        <path d="M18 27H27L32 22L37 27H46V37H37L32 42L27 37H18Z"/>
+      </g>
+    </symbol>
+    <symbol id="negative" viewBox="0 0 64 64">
+      <path fill="currentColor" fill-rule="evenodd" d="M8 8H56V56H8ZM20 18V28H44V18H50V46H44V36H20V46H14V18Z"/>
+    </symbol>
+  </defs>
+
+  <rect width="1440" height="960" fill="#F4F5F7"/>
+  <text x="72" y="76" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="38" font-weight="700" fill="#111827">Handoff — semantic-fusion concept families</text>
+  <text x="72" y="116" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="19" fill="#667085">H + transfer + collaboration · monochrome app icon · 16 px target</text>
+  <rect x="1085" y="54" width="283" height="42" rx="21" fill="#FFF0D8"/>
+  <text x="1226.5" y="81" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="650" fill="#8A4B08">CONCEPT STAGE · NOT SCREENED</text>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, sans-serif">
+    <g transform="translate(72 160)">
+      <rect width="392" height="300" rx="28" fill="white" stroke="#355CFF" stroke-width="4"/>
+      <rect x="24" y="22" width="88" height="30" rx="15" fill="#E8EDFF"/>
+      <text x="68" y="43" text-anchor="middle" font-size="14" font-weight="700" fill="#2949CC">SELECTED</text>
+      <use href="#relay" x="116" y="58" width="160" height="160" color="#111827"/>
+      <text x="24" y="246" font-size="22" font-weight="700" fill="#111827">1. Relay Joint H</text>
+      <text x="24" y="275" font-size="15" fill="#667085">shared stroke · sender–receiver seam</text>
+    </g>
+
+    <g transform="translate(524 160)">
+      <rect width="392" height="300" rx="28" fill="white"/>
+      <use href="#bridge" x="116" y="58" width="160" height="160" color="#111827"/>
+      <text x="24" y="246" font-size="22" font-weight="700" fill="#111827">2. Bridge Arrow H</text>
+      <text x="24" y="275" font-size="15" fill="#667085">shared crossbar · directional terminal</text>
+    </g>
+
+    <g transform="translate(976 160)">
+      <rect width="392" height="300" rx="28" fill="white"/>
+      <use href="#step" x="116" y="58" width="160" height="160" color="#111827"/>
+      <text x="24" y="246" font-size="22" font-weight="700" fill="#111827">3. Relay Step H</text>
+      <text x="24" y="275" font-size="15" fill="#667085">state change · stepped bridge</text>
+    </g>
+
+    <g transform="translate(72 500)">
+      <rect width="392" height="300" rx="28" fill="white"/>
+      <use href="#dovetail" x="116" y="58" width="160" height="160" color="#111827"/>
+      <text x="24" y="246" font-size="22" font-weight="700" fill="#111827">4. Interlocking Half-H</text>
+      <text x="24" y="275" font-size="15" fill="#667085">two-party modules · shared joint</text>
+    </g>
+
+    <g transform="translate(524 500)">
+      <rect width="392" height="300" rx="28" fill="white"/>
+      <use href="#negative" x="116" y="58" width="160" height="160" color="#111827"/>
+      <text x="24" y="246" font-size="22" font-weight="700" fill="#111827">5. Negative H Channel</text>
+      <text x="24" y="275" font-size="15" fill="#667085">figure–ground · shared passage</text>
+    </g>
+
+    <g transform="translate(976 500)">
+      <rect width="392" height="300" rx="28" fill="white"/>
+      <use href="#node" x="116" y="58" width="160" height="160" color="#111827"/>
+      <text x="24" y="246" font-size="22" font-weight="700" fill="#111827">6. Shared Exchange Node</text>
+      <text x="24" y="275" font-size="15" fill="#667085">module system · central exchange</text>
+    </g>
+  </g>
+
+  <text x="72" y="864" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="650" fill="#111827">Selection principle</text>
+  <text x="72" y="898" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="17" fill="#667085">Two equal collaborators create one unmistakable H through a macro-scale handoff seam—without people, arrows, or a generic container.</text>
+  <text x="72" y="928" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" fill="#8A4B08">No artifact QA or current prior-art screen is claimed on this concept sheet.</text>
+</svg>

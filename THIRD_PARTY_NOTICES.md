@@ -1,0 +1,34 @@
+# Third-party notices
+
+## Methodology references
+
+The workflow in this project was informed in part by a study of six publicly
+accessible logo-design videos published on Douyin by **BIGFISH** (Douyin ID
+`81478433865`):
+
+- [一个好的设计，就在于元素能否巧妙融合](https://www.douyin.com/video/7662579006969005233)
+- [只要学会这种方法，LOGO设计你就手拿把掐](https://www.douyin.com/video/7663327822182056165)
+- [LOGO想要有辨识度，就得做不一样的设计](https://www.douyin.com/video/7665546888943006713)
+- [学会这些方法，logo设计手拿把掐](https://www.douyin.com/video/7664821149108509819)
+- [只要打开思维，任何创意都轻轻松松](https://www.douyin.com/video/7665168753902645669)
+- [学会这种手法，你的LOGO将过目不忘](https://www.douyin.com/video/7661837486923013489)
+
+The project authors are not affiliated with BIGFISH or Douyin. Reference here
+does not imply sponsorship, endorsement, authorship, or approval of this
+project by either party.
+
+No third-party video, image, audio, cover, transcript, downloaded metadata, or
+logo asset from these sources is included in this repository. The repository
+contains original workflow text, evaluation material, and project-created
+examples only.
+
+The Handoff, 岫页, and D tool graphics under `assets/examples/` are original,
+fictional teaching or regression assets created for this project. They do not
+trace or reproduce marks shown in the referenced videos and do not imply that
+the fictional names are cleared for commercial use.
+
+The Apache License 2.0 in [LICENSE](LICENSE) applies only to material for which
+the project contributors have the right to grant that license. It does not
+license third-party content, names, logos, trademarks, platform branding, or
+linked material. Rights in third-party material remain with their respective
+owners.

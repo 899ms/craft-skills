@@ -1,0 +1,42 @@
+.DS_Store
+Thumbs.db
+
+# Editors and local tooling
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Generated caches and environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+node_modules/
+
+# Local validation output
+tmp/
+out/
+coverage/
+
+# Downloaded or raw source media is intentionally not part of this project
+downloads/
+raw-media/
+source-media/
+source-videos/
+contact-sheets/
+video-frames/
+source-screenshots/
+*.mp4
+*.m4v
+*.mov
+*.webm
+*.mkv
+*.avi
+*.mp3
+*.m4a
+*.aac
+*.wav
+*.flac

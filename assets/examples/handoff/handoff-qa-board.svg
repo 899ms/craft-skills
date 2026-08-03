@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Handoff Relay Joint H visual QA board</title>
+  <desc id="desc">The selected monochrome H mark shown in black, reverse, app-icon crop, responsive raster sizes, and an explanatory sender-receiver diagram.</desc>
+  <defs>
+    <symbol id="main" viewBox="0 0 64 64">
+      <g fill="currentColor">
+        <rect x="12" y="8" width="12" height="48" rx="6"/>
+        <path d="M20 26H28L34 32L28 38H20Z"/>
+        <rect x="40" y="8" width="12" height="48" rx="6"/>
+        <path d="M32 26H44V38H32L38 32Z"/>
+      </g>
+    </symbol>
+    <symbol id="micro" viewBox="0 0 64 64">
+      <g fill="currentColor">
+        <rect x="12" y="8" width="12" height="48" rx="4"/>
+        <path d="M20 24H29L35 32L29 40H20Z"/>
+        <rect x="40" y="8" width="12" height="48" rx="4"/>
+        <path d="M34 24H44V40H34L40 32Z"/>
+      </g>
+    </symbol>
+  </defs>
+
+  <rect width="1200" height="900" fill="#F3F4F6"/>
+  <text x="60" y="66" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="30" font-weight="700" fill="#111827">Handoff — Relay Joint H QA</text>
+  <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="17" fill="#6B7280">twin stems = collaborators · sender wedge + receiver socket = handoff seam</text>
+
+  <rect x="60" y="135" width="320" height="320" rx="24" fill="white"/>
+  <use href="#main" x="108" y="183" width="224" height="224" color="#111827"/>
+  <text x="84" y="430" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="17" fill="#374151">Solid black</text>
+
+  <rect x="440" y="135" width="320" height="320" rx="24" fill="#111827"/>
+  <use href="#main" x="488" y="183" width="224" height="224" color="white"/>
+  <text x="464" y="430" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="17" fill="#D1D5DB">Reversed</text>
+
+  <rect x="820" y="135" width="320" height="320" rx="72" fill="#355CFF"/>
+  <use href="#main" x="868" y="183" width="224" height="224" color="white"/>
+  <text x="844" y="430" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="17" fill="white">App-icon crop</text>
+
+  <rect x="60" y="495" width="700" height="330" rx="24" fill="white"/>
+  <text x="84" y="535" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="600" fill="#111827">Responsive raster-size row</text>
+  <g color="#111827">
+    <use href="#micro" x="92" y="590" width="16" height="16"/>
+    <use href="#main" x="154" y="586" width="24" height="24"/>
+    <use href="#main" x="224" y="582" width="32" height="32"/>
+    <use href="#main" x="302" y="566" width="64" height="64"/>
+    <use href="#main" x="406" y="534" width="128" height="128"/>
+  </g>
+  <g font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" fill="#6B7280" text-anchor="middle">
+    <text x="100" y="650">16 micro</text>
+    <text x="166" y="650">24</text>
+    <text x="240" y="650">32</text>
+    <text x="334" y="650">64</text>
+    <text x="470" y="690">128 px</text>
+  </g>
+  <text x="84" y="748" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#374151">Switch to the wider-seam micro mark at 20 px and below.</text>
+  <text x="84" y="779" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#8A4B08">Inspect native pixels: the diagonal seam must stay open without breaking the H.</text>
+
+  <rect x="820" y="495" width="320" height="330" rx="24" fill="white"/>
+  <text x="844" y="535" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="600" fill="#111827">Structural dependency</text>
+  <g transform="translate(864 568) scale(3.3)">
+    <g fill="#355CFF">
+      <rect x="12" y="8" width="12" height="48" rx="6"/>
+      <path d="M20 26H28L34 32L28 38H20Z"/>
+    </g>
+    <g fill="#0F9F8F">
+      <rect x="40" y="8" width="12" height="48" rx="6"/>
+      <path d="M32 26H44V38H32L38 32Z"/>
+    </g>
+  </g>
+  <text x="844" y="785" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" fill="#667085">Explanatory colors only.</text>
+  <text x="844" y="807" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" fill="#667085">Neither module forms an H alone.</text>
+</svg>
