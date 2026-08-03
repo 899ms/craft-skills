@@ -1,5 +1,7 @@
 # Craft Skills
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 Research-backed, eval-driven skills for AI agents.
 
 Craft Skills turns transferable craft knowledge into focused workflows with
@@ -14,7 +16,7 @@ Created and curated by [Fini Yang](https://github.com/finiking). Maintained by
 
 | Skill | Purpose | Status |
 |---|---|---|
-| [`logo-semantic-fusion`](skills/logo-semantic-fusion/SKILL.md) | Design and evaluate marks in which multiple meanings genuinely share geometry. [Read the guide and inspect the examples.](docs/logo-semantic-fusion.md) | v0.1 experimental |
+| [`logo-semantic-fusion`](skills/logo-semantic-fusion/SKILL.md) | Design and evaluate marks in which multiple meanings genuinely share geometry. [Read the guide](docs/logo-semantic-fusion.md) · [中文指南](docs/logo-semantic-fusion.zh-CN.md) | v0.1 experimental |
 
 [![Original Handoff semantic-fusion concept families](assets/examples/handoff/handoff-concept-sheet.png)](docs/logo-semantic-fusion.md)
 

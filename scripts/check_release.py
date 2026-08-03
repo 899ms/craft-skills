@@ -14,12 +14,14 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILLS_ROOT = ROOT / "skills"
 REQUIRED = (
     ROOT / "README.md",
+    ROOT / "README.zh-CN.md",
     ROOT / "CONTRIBUTING.md",
     ROOT / "LICENSE",
     ROOT / "THIRD_PARTY_NOTICES.md",
     ROOT / ".github" / "CODEOWNERS",
     ROOT / "assets" / "examples" / "README.md",
     ROOT / "docs" / "logo-semantic-fusion.md",
+    ROOT / "docs" / "logo-semantic-fusion.zh-CN.md",
     ROOT / "examples" / "handoff-hero.md",
 )
 MEDIA_SUFFIXES = {

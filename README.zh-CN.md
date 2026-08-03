@@ -1,0 +1,81 @@
+# Craft Skills
+
+[English](README.md) | [简体中文](README.zh-CN.md)
+
+面向 AI Agent 的研究驱动、评测驱动型 Skill 集合。
+
+Craft Skills 把可迁移的专业方法提炼成聚焦的工作流，并为每个 Skill
+明确触发边界、退出条件、原创案例与前向测试。它不是视频摘要库、提示词合集，
+也不是模仿创作者风格的素材仓库。
+
+由 [Fini Yang](https://github.com/finiking) 创建并策划，
+[ZSeven](https://github.com/ZSeven-W) 维护。
+
+## Skills
+
+| Skill | 用途 | 状态 |
+|---|---|---|
+| [`logo-semantic-fusion`](skills/logo-semantic-fusion/SKILL.md) | 设计和评审让多个含义真正共享几何结构的 Logo。 [阅读中文使用指南并查看案例](docs/logo-semantic-fusion.zh-CN.md) | v0.1 实验版 |
+
+[![原创 Handoff 语义共形概念家族](assets/examples/handoff/handoff-concept-sheet.png)](docs/logo-semantic-fusion.zh-CN.md)
+
+“实验版”表示这套工作流具备结构化测试和原创案例，不代表它已经达到生产就绪、
+完成商标法律核查或获得专业人士批准。
+
+## 安装
+
+克隆仓库，然后只复制需要的 Skill：
+
+```sh
+git clone https://github.com/ZSeven-W/craft-skills.git
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -R craft-skills/skills/logo-semantic-fusion \
+  "${CODEX_HOME:-$HOME/.codex}/skills/"
+```
+
+如果安装后没有立即发现 Skill，请重启或重新加载 Agent 会话。
+
+## 发布标准
+
+每个公开 Skill 都必须：
+
+- 解决一个范围明确、可复用的用户目标；
+- 同时定义触发与不触发边界；
+- 包含适用性判断、退出路径和证据规则；
+- 只使用原创案例或许可明确的素材；
+- 在评测中覆盖正常、信息不全、不应触发及边缘情况；
+- 在未见过的任务上证明增益，而不只适配仓库内置案例；
+- 区分已经检查的实际产物、提示词与预期输出；
+- 通过仓库的确定性发布检查；
+- 说明重要限制，不作缺乏依据的专业或法律承诺。
+
+## 来源与媒体边界
+
+公开教育内容可以为 Skill 的方法研究提供线索。对方法有重要影响的来源会在对应
+Skill 的溯源说明或第三方声明中提供链接。署名只记录研究背景，不表示来源作者
+认可或背书本项目。
+
+本仓库不包含下载的视频、音频、封面、截图、字幕或转录文本、平台元数据或第三方
+品牌素材。公开案例必须为原创内容或具有明确许可。研究档案和采集工具始终位于本
+仓库及其发布历史之外。
+
+## 参与贡献
+
+欢迎提交缺陷修复、更清晰的说明、额外评测和原创测试案例。提出新 Skill 前请先
+阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+请勿提交自动化来源转换、近似逐字摘要、创作者风格克隆、抓取媒体、通用提示词
+合集，或把未经产物验证的结果描述成已经通过检查的内容。
+
+## 验证
+
+在仓库根目录运行确定性发布检查：
+
+```sh
+python3 scripts/check_release.py
+```
+
+## 许可证
+
+仓库原创内容采用 [Apache License 2.0](LICENSE) 许可。链接内容和第三方内容
+仍由各自权利方持有；详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

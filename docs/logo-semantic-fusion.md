@@ -1,5 +1,7 @@
 # Logo Semantic Fusion Skill
 
+[English](logo-semantic-fusion.md) | [简体中文](logo-semantic-fusion.zh-CN.md)
+
 [Back to the Craft Skills collection](../README.md)
 
 An experimental Codex skill for logo ideation and critique when two or more
