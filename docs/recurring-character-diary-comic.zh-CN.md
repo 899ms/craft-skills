@@ -2,7 +2,7 @@
 
 [English](recurring-character-diary-comic.md) | [简体中文](recurring-character-diary-comic.zh-CN.md)
 
-[返回 Craft Skills 集合](../README.zh-CN.md)
+[返回 Craft Skills 集合](../README.md)
 
 这是一个实验性的 Codex Skill，用于围绕已有且获授权的固定角色，创建、审核和
 局部修复 4–8 格个人日记漫画。

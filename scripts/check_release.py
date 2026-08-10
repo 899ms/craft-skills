@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILLS_ROOT = ROOT / "skills"
 REQUIRED = (
     ROOT / "README.md",
-    ROOT / "README.zh-CN.md",
+    ROOT / "README.en.md",
     ROOT / "CONTRIBUTING.md",
     ROOT / "LICENSE",
     ROOT / "THIRD_PARTY_NOTICES.md",
@@ -215,6 +215,9 @@ def check_skill_frontmatter(skill: Path) -> None:
     openai_yaml = skill / "agents" / "openai.yaml"
     if not openai_yaml.is_file():
         fail(f"missing agents/openai.yaml for {skill.name}")
+    for readme_name in ("README.md", "README.en.md"):
+        if not (skill / readme_name).is_file():
+            fail(f"missing {readme_name} for {skill.name}")
     evals = ROOT / "evals" / skill.name / "cases.yaml"
     if not evals.is_file():
         fail(f"missing evals for {skill.name}: {evals.relative_to(ROOT)}")
@@ -398,9 +401,7 @@ def check_eval_schemas(skills: tuple[Path, ...]) -> None:
 def check_collection_index(skills: tuple[Path, ...]) -> None:
     readmes = {
         "README.md": (ROOT / "README.md").read_text(encoding="utf-8"),
-        "README.zh-CN.md": (ROOT / "README.zh-CN.md").read_text(
-            encoding="utf-8"
-        ),
+        "README.en.md": (ROOT / "README.en.md").read_text(encoding="utf-8"),
     }
     for skill in skills:
         expected_skill = f"skills/{skill.name}/"
@@ -409,8 +410,8 @@ def check_collection_index(skills: tuple[Path, ...]) -> None:
                 fail(f"{readme_name} does not index {skill.name}")
 
         expected_guides = {
-            "README.md": ROOT / "docs" / f"{skill.name}.md",
-            "README.zh-CN.md": ROOT / "docs" / f"{skill.name}.zh-CN.md",
+            "README.md": ROOT / "docs" / f"{skill.name}.zh-CN.md",
+            "README.en.md": ROOT / "docs" / f"{skill.name}.md",
         }
         for readme_name, guide in expected_guides.items():
             if not guide.is_file():

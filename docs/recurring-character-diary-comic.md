@@ -2,7 +2,7 @@
 
 [English](recurring-character-diary-comic.md) | [简体中文](recurring-character-diary-comic.zh-CN.md)
 
-[Back to the Craft Skills collection](../README.md)
+[Back to the Craft Skills collection](../README.en.md)
 
 An experimental Codex skill for creating, auditing, and repairing 4–8 panel
 diary-comic episodes around an existing authorized recurring character.

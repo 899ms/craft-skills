@@ -2,7 +2,7 @@
 
 [English](logo-semantic-fusion.md) | [简体中文](logo-semantic-fusion.zh-CN.md)
 
-[返回 Craft Skills 集合](../README.zh-CN.md)
+[返回 Craft Skills 集合](../README.md)
 
 这是一个实验性的 Codex Skill，适合处理 Logo 构思与评审中的“语义共形”问题：
 当两个或更多品牌含义需要共享同一条轮廓、笔画、负空间、字形骨架或模块系统时，

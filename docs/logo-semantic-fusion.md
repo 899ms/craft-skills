@@ -2,7 +2,7 @@
 
 [English](logo-semantic-fusion.md) | [简体中文](logo-semantic-fusion.zh-CN.md)
 
-[Back to the Craft Skills collection](../README.md)
+[Back to the Craft Skills collection](../README.en.md)
 
 An experimental Codex skill for logo ideation and critique when two or more
 brand meanings need to share the same contour, stroke, void, glyph structure,
