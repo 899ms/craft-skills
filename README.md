@@ -21,6 +21,8 @@ Created and curated by [Fini Yang](https://github.com/finiking). Maintained by
 
 [![Original Handoff semantic-fusion concept families](assets/examples/handoff/handoff-concept-sheet.png)](docs/logo-semantic-fusion.md)
 
+[![Original recurring-character diary-comic example with an irregular manga layout](assets/examples/recurring-character-diary-comic/recurring-character-diary-comic-cover.png)](docs/recurring-character-diary-comic.md)
+
 “Experimental” means the workflow has structured tests and original examples;
 it does not imply production readiness, trademark clearance, or professional
 approval.
