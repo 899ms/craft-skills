@@ -17,6 +17,7 @@ Created and curated by [Fini Yang](https://github.com/finiking). Maintained by
 | Skill | Purpose | Status |
 |---|---|---|
 | [`logo-semantic-fusion`](skills/logo-semantic-fusion/SKILL.md) | Design and evaluate marks in which multiple meanings genuinely share geometry. [Read the guide](docs/logo-semantic-fusion.md) · [中文指南](docs/logo-semantic-fusion.zh-CN.md) | v0.1 experimental |
+| [`recurring-character-diary-comic`](skills/recurring-character-diary-comic/SKILL.md) | Create, audit, and repair 4–8 panel diary-comic episodes around an authorized recurring character using locked story and visual contracts, risk-routed generation, auditable composition, and artifact-level QA. [Read the guide](docs/recurring-character-diary-comic.md) · [中文指南](docs/recurring-character-diary-comic.zh-CN.md) | v0.1 experimental |
 
 [![Original Handoff semantic-fusion concept families](assets/examples/handoff/handoff-concept-sheet.png)](docs/logo-semantic-fusion.md)
 
@@ -32,6 +33,10 @@ Clone the collection, then copy only the skill you want:
 git clone https://github.com/ZSeven-W/craft-skills.git
 mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
 cp -R craft-skills/skills/logo-semantic-fusion \
+  "${CODEX_HOME:-$HOME/.codex}/skills/"
+
+# Or install the recurring-character comic skill:
+cp -R craft-skills/skills/recurring-character-diary-comic \
   "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
@@ -73,11 +78,18 @@ as verified without artifact evidence.
 
 ## Validate
 
-Run the deterministic release check from the repository root:
+Use Python 3.10 or newer. Install the validator dependencies, then run the
+deterministic release check from the repository root:
 
 ```sh
+python3 -m pip install -r \
+  evals/recurring-character-diary-comic/requirements.txt
 python3 scripts/check_release.py
 ```
+
+The root check invokes any per-skill eval validator shipped by the collection,
+in addition to checking package structure, links, metadata, media, and release
+hygiene.
 
 ## License
 

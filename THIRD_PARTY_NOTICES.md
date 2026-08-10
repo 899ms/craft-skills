@@ -27,6 +27,13 @@ fictional teaching or regression assets created for this project. They do not
 trace or reproduce marks shown in the referenced videos and do not imply that
 the fictional names are cleared for commercial use.
 
+The addressable visual-contract approach used by
+`recurring-character-diary-comic` was informed in part by the public
+[Context Scaling project](https://heheyas.github.io/context-scaling/) and its
+[research paper](https://arxiv.org/abs/2607.29679). This repository does not
+copy the paper, project media, datasets, or implementation. The links record
+research context only and do not imply endorsement or affiliation.
+
 The Apache License 2.0 in [LICENSE](LICENSE) applies only to material for which
 the project contributors have the right to grant that license. It does not
 license third-party content, names, logos, trademarks, platform branding, or

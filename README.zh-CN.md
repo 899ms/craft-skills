@@ -16,6 +16,7 @@ Craft Skills 把可迁移的专业方法提炼成聚焦的工作流，并为每�
 | Skill | 用途 | 状态 |
 |---|---|---|
 | [`logo-semantic-fusion`](skills/logo-semantic-fusion/SKILL.md) | 设计和评审让多个含义真正共享几何结构的 Logo。 [阅读中文使用指南并查看案例](docs/logo-semantic-fusion.zh-CN.md) | v0.1 实验版 |
+| [`recurring-character-diary-comic`](skills/recurring-character-diary-comic/SKILL.md) | 围绕已有且获授权的固定角色，创建、审核或局部修复 4–8 格日记漫画；锁定故事与视觉合同，按风险选择生成路线，可审计合成，并检查实际成品。 [阅读中文使用指南](docs/recurring-character-diary-comic.zh-CN.md) · [English guide](docs/recurring-character-diary-comic.md) | v0.1 实验版 |
 
 [![原创 Handoff 语义共形概念家族](assets/examples/handoff/handoff-concept-sheet.png)](docs/logo-semantic-fusion.zh-CN.md)
 
@@ -30,6 +31,10 @@ Craft Skills 把可迁移的专业方法提炼成聚焦的工作流，并为每�
 git clone https://github.com/ZSeven-W/craft-skills.git
 mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
 cp -R craft-skills/skills/logo-semantic-fusion \
+  "${CODEX_HOME:-$HOME/.codex}/skills/"
+
+# 或安装固定角色日记漫画 Skill：
+cp -R craft-skills/skills/recurring-character-diary-comic \
   "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
@@ -69,11 +74,17 @@ Skill 的溯源说明或第三方声明中提供链接。署名只记录研究�
 
 ## 验证
 
-在仓库根目录运行确定性发布检查：
+使用 Python 3.10 或更高版本。先安装验证依赖，再在仓库根目录运行确定性发布
+检查：
 
 ```sh
+python3 -m pip install -r \
+  evals/recurring-character-diary-comic/requirements.txt
 python3 scripts/check_release.py
 ```
+
+根检查器除了验证包结构、链接、元数据、媒体和发布卫生，还会执行集合中各 Skill
+自带的 eval validator。
 
 ## 许可证
 

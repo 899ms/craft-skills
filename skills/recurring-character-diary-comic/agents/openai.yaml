@@ -1,0 +1,4 @@
+interface:
+  display_name: "Recurring Character Diary Comic"
+  short_description: "Create, audit, and repair recurring-character comics"
+  default_prompt: "Use $recurring-character-diary-comic to turn this anecdote and my existing character reference into a diary comic, choose the appropriate risk route, compose it deterministically, and inspect the final artifact."

@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import re
 import struct
+import subprocess
 import sys
 from pathlib import Path
 
@@ -20,8 +21,6 @@ REQUIRED = (
     ROOT / "THIRD_PARTY_NOTICES.md",
     ROOT / ".github" / "CODEOWNERS",
     ROOT / "assets" / "examples" / "README.md",
-    ROOT / "docs" / "logo-semantic-fusion.md",
-    ROOT / "docs" / "logo-semantic-fusion.zh-CN.md",
     ROOT / "examples" / "handoff-hero.md",
 )
 MEDIA_SUFFIXES = {
@@ -43,6 +42,8 @@ MEDIA_SUFFIXES = {
     ".svg",
     ".webp",
 }
+ALLOWED_TEXT_SUFFIXES = {".json", ".md", ".py", ".txt", ".yaml"}
+ALLOWED_TEXT_FILENAMES = {".gitignore", "CODEOWNERS", "LICENSE"}
 BANNED_MEDIA_PATH_PARTS = {
     "contact-sheets",
     "raw-media",
@@ -285,9 +286,15 @@ def check_asset_references() -> None:
 def check_tree_hygiene() -> None:
     seen_assets = set()
     for path in ROOT.rglob("*"):
-        if not path.is_file() or ".git" in path.parts:
+        if ".git" in path.parts:
             continue
         relative = path.relative_to(ROOT)
+        if path.is_symlink():
+            fail(f"symbolic links are not allowed in release: {relative}")
+        if path.is_dir():
+            continue
+        if not path.is_file():
+            fail(f"unexpected non-regular filesystem entry: {relative}")
         if any(part.lower() in BANNED_MEDIA_PATH_PARTS for part in relative.parts):
             fail(f"banned source-media path in release: {relative}")
         if path.stat().st_size > 1_048_576:
@@ -300,6 +307,11 @@ def check_tree_hygiene() -> None:
                 continue
         elif path.suffix.lower() in MEDIA_SUFFIXES:
             fail(f"unapproved media asset in release: {relative}")
+        elif (
+            path.suffix.lower() not in ALLOWED_TEXT_SUFFIXES
+            and path.name not in ALLOWED_TEXT_FILENAMES
+        ):
+            fail(f"unapproved release file type: {relative}")
 
         try:
             text = path.read_text(encoding="utf-8")
@@ -331,12 +343,76 @@ def check_openai_yaml(skill: Path) -> None:
         )
 
 
-def check_collection_index(skills: tuple[Path, ...]) -> None:
-    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+def check_eval_schemas(skills: tuple[Path, ...]) -> None:
     for skill in skills:
-        expected = f"skills/{skill.name}/"
-        if expected not in readme:
-            fail(f"README does not index {skill.name}")
+        eval_dir = ROOT / "evals" / skill.name
+        cases = eval_dir / "cases.yaml"
+        validator = eval_dir / "validate_cases.py"
+        requirements = eval_dir / "requirements.txt"
+        self_test = eval_dir / "self_test_validate_cases.py"
+        if not validator.is_file():
+            fail(f"missing eval validator for {skill.name}: {validator.relative_to(ROOT)}")
+        if not requirements.is_file():
+            fail(
+                f"missing eval requirements for {skill.name}: "
+                f"{requirements.relative_to(ROOT)}"
+            )
+        result = subprocess.run(
+            [sys.executable, "-B", str(validator), str(cases)],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            detail = (result.stderr or result.stdout).strip()
+            fail(
+                f"eval validator failed for {skill.name}; install "
+                f"{requirements.relative_to(ROOT)}"
+                + (f": {detail}" if detail else "")
+            )
+        if self_test.is_file():
+            result = subprocess.run(
+                [sys.executable, "-B", str(self_test)],
+                cwd=ROOT,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0:
+                detail = (result.stderr or result.stdout).strip()
+                fail(
+                    f"eval self-test failed for {skill.name}"
+                    + (f": {detail}" if detail else "")
+                )
+
+
+def check_collection_index(skills: tuple[Path, ...]) -> None:
+    readmes = {
+        "README.md": (ROOT / "README.md").read_text(encoding="utf-8"),
+        "README.zh-CN.md": (ROOT / "README.zh-CN.md").read_text(
+            encoding="utf-8"
+        ),
+    }
+    for skill in skills:
+        expected_skill = f"skills/{skill.name}/"
+        for readme_name, readme in readmes.items():
+            if expected_skill not in readme:
+                fail(f"{readme_name} does not index {skill.name}")
+
+        expected_guides = {
+            "README.md": ROOT / "docs" / f"{skill.name}.md",
+            "README.zh-CN.md": ROOT / "docs" / f"{skill.name}.zh-CN.md",
+        }
+        for readme_name, guide in expected_guides.items():
+            if not guide.is_file():
+                fail(
+                    f"missing public guide for {skill.name}: "
+                    f"{guide.relative_to(ROOT)}"
+                )
+            expected_guide = guide.relative_to(ROOT).as_posix()
+            if expected_guide not in readmes[readme_name]:
+                fail(f"{readme_name} does not link {expected_guide}")
 
 
 def main() -> int:
@@ -349,6 +425,7 @@ def main() -> int:
     check_asset_references()
     for skill in skills:
         check_openai_yaml(skill)
+    check_eval_schemas(skills)
     check_collection_index(skills)
     print(f"release_check=ok skills={len(skills)}")
     return 0
