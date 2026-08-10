@@ -148,6 +148,14 @@ APPROVED_ASSETS = {
         578,
         None,
     ),
+    Path(
+        "assets/examples/recurring-character-diary-comic/"
+        "recurring-character-diary-comic-cover.png"
+    ): (
+        "aef95d57385e4888351cc91172d144f13488596215ebe47d9a76fa7bf3619954",
+        643725,
+        (1000, 400),
+    ),
 }
 SECRET_PATTERNS = (
     re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),

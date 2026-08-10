@@ -20,6 +20,8 @@ Craft Skills 把可迁移的专业方法提炼成聚焦的工作流，并为每�
 
 [![原创 Handoff 语义共形概念家族](assets/examples/handoff/handoff-concept-sheet.png)](docs/logo-semantic-fusion.zh-CN.md)
 
+[![原创固定角色日记漫画不规则分镜案例](assets/examples/recurring-character-diary-comic/recurring-character-diary-comic-cover.png)](docs/recurring-character-diary-comic.zh-CN.md)
+
 “实验版”表示这套工作流具备结构化测试和原创案例，不代表它已经达到生产就绪、
 完成商标法律核查或获得专业人士批准。
 
