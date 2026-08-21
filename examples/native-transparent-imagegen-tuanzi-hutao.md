@@ -5,9 +5,12 @@ This case exercises native alpha on fur that would be costly to extract cleanly 
 ## Rights and release boundary
 
 The held-out reference is Fini Yang's watermarked first-version Tuanzi and Hutao character action
-sheet. It was supplied directly by the rights holder for this test. The sheet and generated
-raster originals are not redistributed in this repository and are not licensed under Apache-2.0.
-Their hashes are included only to identify the inspected evidence.
+sheet. It was supplied directly by the rights holder for this test. The rights holder explicitly
+authorized the technically alpha-valid
+[Attempt 1 original](../skills/native-transparent-imagegen/assets/tuanzi-hutao-native-alpha-example.png)
+as the skill's public display image. The characters, reference sheet, and display image remain
+rights-reserved and are not licensed under Apache-2.0. Other generated attempts are not
+redistributed; their hashes identify the inspected evidence.
 
 ## Fixed method
 
@@ -95,5 +98,6 @@ does not establish reliable delivery or a clean public hero asset. The accepted 
 > Native alpha succeeded in one inspected attempt; two opaque checkerboard outputs and one visual
 > haze failure show why prompts alone are insufficient.
 
-The case remains an experimental regression record, not a published character asset, user
-acceptance, or permission to release the held-out images.
+The case remains an experimental regression record. Permission covers the selected display image,
+not user acceptance of every visual detail or permission to release the held-out reference and
+failed generated attempts.

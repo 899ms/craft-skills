@@ -29,10 +29,13 @@ the fictional names are cleared for commercial use.
 
 The `native-transparent-imagegen` case record refers to Fini Yang's original
 Tuanzi and Hutao characters and to held-out, watermarked first-version artwork
-supplied directly by the rights holder. The character sheet and generated raster
-outputs are not redistributed by this repository and are not licensed under
-Apache-2.0. Hashes and technical observations identify the inspected evidence;
-they do not grant rights to the characters or held-out artwork.
+supplied directly by the rights holder. The selected native-alpha output under
+`skills/native-transparent-imagegen/assets/` is redistributed by Fini Yang's
+explicit permission as the skill's public example. The characters, reference
+sheet, and displayed generated artwork remain rights-reserved and are not
+licensed under Apache-2.0. Other generated attempts are not redistributed.
+Hashes and technical observations identify the inspected evidence; they do not
+grant rights to the characters, reference sheet, or generated outputs.
 
 The addressable visual-contract approach used by
 `recurring-character-diary-comic` was informed in part by the public
