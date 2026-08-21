@@ -27,6 +27,13 @@ fictional teaching or regression assets created for this project. They do not
 trace or reproduce marks shown in the referenced videos and do not imply that
 the fictional names are cleared for commercial use.
 
+The `native-transparent-imagegen` case record refers to Fini Yang's original
+Tuanzi and Hutao characters and to held-out, watermarked first-version artwork
+supplied directly by the rights holder. The character sheet and generated raster
+outputs are not redistributed by this repository and are not licensed under
+Apache-2.0. Hashes and technical observations identify the inspected evidence;
+they do not grant rights to the characters or held-out artwork.
+
 The addressable visual-contract approach used by
 `recurring-character-diary-comic` was informed in part by the public
 [Context Scaling project](https://heheyas.github.io/context-scaling/) and its

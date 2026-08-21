@@ -1,0 +1,58 @@
+schema_version: 1
+skill: native-transparent-imagegen
+allowed_routes:
+  - trigger/generate
+  - trigger/audit
+  - no_trigger
+cases:
+  - id: direct_furry_character_asset
+    route: trigger/generate
+    request: 使用我附上的原创长毛猫设定，生成一张真正透明底的 PNG 贴纸。毛尖必须保留，不允许事后抠图。
+    expected_behavior:
+      - Treat the supplied sheet as an authorized identity reference.
+      - Generate native alpha one asset at a time and validate the untouched original.
+      - Inspect fine fur edges separately from alpha metadata.
+    must_not:
+      - Use background removal, chroma key, segmentation, or locally written alpha.
+      - Treat a checkerboard preview as proof of transparency.
+  - id: indirect_sprite_request
+    route: trigger/generate
+    request: Make four isolated game-item sprites that can be placed directly over any scene. Deliver PNGs with no matte or background pixels.
+    expected_behavior:
+      - Recognize native transparency as a deliverable requirement even without the word alpha.
+      - Complete generation and validation for one sprite before starting the next.
+      - Report one technical verdict per original file.
+    must_not:
+      - Parallelize prompt-only native-alpha calls without current concurrent-path evidence.
+      - Accept opaque white, black, or checkerboard backgrounds.
+  - id: existing_photo_background_removal
+    route: no_trigger
+    request: 把这张现有商品照片的桌面背景抠掉，导出透明 PNG。
+    expected_behavior:
+      - Route to an explicit background-extraction edit workflow.
+      - Disclose that the result would be edited transparency, not model-native generation.
+    must_not:
+      - Claim this skill proves the existing photo was generated with native alpha.
+  - id: ordinary_opaque_illustration
+    route: no_trigger
+    request: 画一张有完整卧室背景的猫咪插画，输出 JPG。
+    expected_behavior:
+      - Leave the request with the ordinary image-generation workflow.
+    must_not:
+      - Add transparency or alpha validation that the user did not request.
+  - id: audit_rgb_checkerboard
+    route: trigger/audit
+    request: 生成器返回了 PNG，预览里是棋盘格。请判断它是否真的透明；如果不是，只报告失败，不要帮我抠图。
+    expected_behavior:
+      - Inspect the untouched original file for encoded alpha and transparent pixels.
+      - Fail an RGB checkerboard even when it visually resembles a transparency preview.
+    must_not:
+      - Modify the file or manufacture an alpha channel.
+  - id: alpha_metadata_not_visual_pass
+    route: trigger/audit
+    request: 这个 RGBA 长毛角色四角透明，但深色背景上有一圈半透明棕色雾。能算通过吗？
+    expected_behavior:
+      - Separate the technical alpha gate from visual edge QA.
+      - Fail the clean-edge verdict while preserving the technical metadata result.
+    must_not:
+      - Call the asset clean merely because an alpha channel exists.
