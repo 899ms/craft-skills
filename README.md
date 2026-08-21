@@ -17,6 +17,28 @@ Craft Skills 把可迁移的专业方法提炼成聚焦的工作流，并为每�
 |---|---|---|
 | [`logo-semantic-fusion`](skills/logo-semantic-fusion/README.md) | 设计和评审让多个含义真正共享几何结构的 Logo。 [阅读中文使用指南并查看案例](docs/logo-semantic-fusion.zh-CN.md) · [Agent 工作流](skills/logo-semantic-fusion/SKILL.md) | v0.1 实验版 |
 | [`recurring-character-diary-comic`](skills/recurring-character-diary-comic/README.md) | 围绕已有且获授权的固定角色，创建、审核或局部修复 4–8 格日记漫画；锁定故事与视觉合同，按风险选择生成路线，可审计合成，并检查实际成品。 [阅读中文使用指南](docs/recurring-character-diary-comic.zh-CN.md) · [Agent 工作流](skills/recurring-character-diary-comic/SKILL.md) | v0.1 实验版 |
+| [`native-transparent-imagegen`](skills/native-transparent-imagegen/README.md) | 原生生成透明 PNG/WebP，检查未经修改的 Alpha、细边缘和证据；RGB 棋盘格直接失败，禁止用抠图伪造成功。 [阅读中文使用指南与团子胡桃案例](docs/native-transparent-imagegen.zh-CN.md) · [Agent 工作流](skills/native-transparent-imagegen/SKILL.md) | v0.1 实验版 |
+
+## 原生透明，不是把棋盘格画进图片
+
+`native-transparent-imagegen` 解决的不是“怎样写一句透明背景 Prompt”，而是怎样证明
+交付文件真的包含模型原生 Alpha：
+
+- 新素材逐张生成，保留模型返回的原始字节；
+- PNG/WebP 必须存在 Alpha、完全透明像素与符合要求的透明四角；
+- RGB 棋盘格直接失败，最多有限重试；
+- 禁止用抠图、色键、分割或本地写入 Alpha 冒充成功；
+- 元数据通过后，仍要在明暗背景下检查毛发、玻璃、烟雾和半透明晕染。
+
+[团子与胡桃第一版毛发案例](examples/native-transparent-imagegen-tuanzi-hutao.md)
+使用权利人直接提供的角色动作页作为本地身份参考。三次原生生成中，一次返回 RGBA，
+两次返回画着棋盘格的 RGB；唯一 RGBA 又因宽范围低 Alpha 晕染没有通过英雄案例视觉门。
+因此公开结论不是“某句 Prompt 包成功”，而是：**能验，才算真的能用。**
+
+```text
+使用 $native-transparent-imagegen 生成透明 PNG。必须是模型原生 Alpha；
+逐张验证未经修改的原文件，失败就报告，不允许抠图补救。
+```
 
 [![原创 Handoff 语义共形概念家族](assets/examples/handoff/handoff-concept-sheet.png)](docs/logo-semantic-fusion.zh-CN.md)
 
@@ -37,6 +59,10 @@ cp -R craft-skills/skills/logo-semantic-fusion \
 
 # 或安装固定角色日记漫画 Skill：
 cp -R craft-skills/skills/recurring-character-diary-comic \
+  "${CODEX_HOME:-$HOME/.codex}/skills/"
+
+# 或安装原生透明生图 Skill：
+cp -R craft-skills/skills/native-transparent-imagegen \
   "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
