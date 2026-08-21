@@ -65,8 +65,11 @@ errors even when alpha metadata passes.
 
 The [case record](../examples/native-transparent-imagegen-tuanzi-hutao.md) used a watermarked
 first-version character action sheet supplied directly by Fini Yang as a local identity and
-medium reference. The character sheet and generated originals are not part of the Apache code
-license; the public package retains only auditable hashes, results, and acceptance boundaries.
+medium reference. The rights holder explicitly authorized the technically alpha-valid
+[original output](../skills/native-transparent-imagegen/assets/tuanzi-hutao-native-alpha-example.png)
+as the skill's public display image. The characters, reference sheet, and display image remain
+rights-reserved and are not part of the Apache-2.0 license. Other generated attempts are not
+distributed with the repository.
 
 Of three native generations, one returned RGBA and two returned RGB checkerboards. The RGBA
 file passed the technical alpha gate but contained a broad low-alpha atmospheric haze, so its

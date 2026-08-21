@@ -156,7 +156,22 @@ APPROVED_ASSETS = {
         643725,
         (1000, 400),
     ),
+    Path(
+        "skills/native-transparent-imagegen/assets/"
+        "tuanzi-hutao-native-alpha-example.png"
+    ): (
+        "066d5b134cbc267a52bbca681afc742b7c64cc2313e1cd77ff3fce5180a8fbb8",
+        2172434,
+        (1536, 1024),
+    ),
 }
+GENERATED_MEDIA_ASSETS = {
+    Path(
+        "skills/native-transparent-imagegen/assets/"
+        "tuanzi-hutao-native-alpha-example.png"
+    )
+}
+PROVENANCE_MARKERS = (b"c2pa", b"gpt-image", b"trainedalgorithmicmedia")
 SECRET_PATTERNS = (
     re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
     re.compile(r"\bsk-[A-Za-z0-9_-]{16,}"),
@@ -267,9 +282,12 @@ def verify_approved_asset(path: Path, relative: Path) -> None:
                 f"({width}x{height})"
             )
         lowered = data.lower()
-        for marker in (b"c2pa", b"gpt-image", b"trainedalgorithmicmedia"):
-            if marker in lowered:
-                fail(f"generated-media provenance marker in {relative}")
+        present_markers = [marker for marker in PROVENANCE_MARKERS if marker in lowered]
+        if relative in GENERATED_MEDIA_ASSETS:
+            if not present_markers:
+                fail(f"generated example is missing provenance marker: {relative}")
+        elif present_markers:
+            fail(f"generated-media provenance marker in {relative}")
 
 
 def check_svg_safety(text: str, relative: Path) -> None:
@@ -308,7 +326,7 @@ def check_tree_hygiene() -> None:
             fail(f"unexpected non-regular filesystem entry: {relative}")
         if any(part.lower() in BANNED_MEDIA_PATH_PARTS for part in relative.parts):
             fail(f"banned source-media path in release: {relative}")
-        if path.stat().st_size > 1_048_576:
+        if path.stat().st_size > 1_048_576 and relative not in APPROVED_ASSETS:
             fail(f"file exceeds 1 MiB: {relative}")
 
         if relative in APPROVED_ASSETS:
