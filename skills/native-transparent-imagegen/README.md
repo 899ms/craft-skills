@@ -52,7 +52,8 @@ Alpha；Prompt 正确、工具返回成功或文件扩展名是 `.png` 都不算
 | 后处理 | 无 |
 | 来源标记 | 原始 C2PA / GPT Image 标记保留 |
 
-仓库保留了原始生成媒体来源标记，不清洗元数据。该文件技术 Alpha 门通过，但毛发外围仍有宽范围低 Alpha 氛围晕染，因此它用于展示
+仓库保留了原始生成媒体来源标记，不清洗元数据。该文件技术 Alpha 门通过，但毛发
+外围仍有宽范围低 Alpha 氛围晕染，因此它用于展示
 “原生 Alpha 确实存在”，不冒充完美干净的生产级抠边。完整三次尝试、Prompt 和失败
 边界见[案例记录](../../examples/native-transparent-imagegen-tuanzi-hutao.md)。
 
