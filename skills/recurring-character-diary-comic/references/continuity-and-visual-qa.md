@@ -39,9 +39,11 @@ Collect these inputs before reviewing:
 Declare one stage for every reviewed artifact:
 
 - `identity-reference`: character identity and reference usability only;
-- `unlettered-panel`: one textless panel against its panel contract;
-- `unlettered-page`: composed art and reading order before bubbles and dialogue;
-- `lettered-final`: composed art, bubbles, exact text, and final page checks;
+- `page-native-final`: one complete generated page including approved dialogue;
+- `page-native-unlettered`: one complete generated page before deterministic lettering;
+- `unlettered-panel`: one textless panel used only by an accepted reconstruction fallback;
+- `reconstructed-page`: a disclosed page assembled from independent fallback panels;
+- `lettered-final`: a page with deterministic bubbles, exact text, and final checks;
 - `repair-candidate`: a panel replacement or pixel-local edit compared with its accepted baseline.
 
 Apply only requirements belonging to the declared stage. Do not fail a deliberately unlettered panel or page because dialogue is absent, and do not promote it as a final page before lettering is verified.
@@ -53,7 +55,7 @@ If only a reduced preview is available, report the review as provisional. Do not
 Review in this order so a late-stage detail pass does not conceal a structural failure:
 
 1. page and reading order;
-2. panel-by-panel inventory;
+2. panel-by-panel evidence inventory on the complete page;
 3. character continuity;
 4. text fidelity;
 5. hands and anatomy;
@@ -71,7 +73,7 @@ Record defects by panel and object. Use a stable locator such as `panel 3 / fore
 - Reject any page that requires guessing which panel or bubble comes next.
 - Verify that no panel, story beat, person, object, or line of dialogue was added, duplicated, reordered, or omitted.
 - Confirm that the final beat receives the intended emphasis and is not visually pre-empted by another panel.
-- Treat irregular composition as acceptable only when the sequence remains unmistakable at normal reading size.
+- Treat irregular composition as acceptable only when the sequence remains unmistakable at original size and exactly 25%.
 
 Passing this section proves that the page is complete and readable. It does not
 prove deliberate editorial rhythm. Uniform rounded cards, a detached cropped
@@ -159,6 +161,7 @@ Prefer an original-resolution crop that includes both contact geometry and enoug
 Treat screens, controls, pages, signs, maps, drawings, books, and checklists as directional objects.
 
 - Identify the current operator, reader, viewer, or recipient for every directional object.
+- Record the content face, reader side, viewer side, hinge or controls, gaze or hands, and the visible pixels that prove each assignment. Co-occurrence is not proof.
 - Orient an active screen and its controls toward the person using it. Show the display to the audience only through a physically plausible angle, reflection, cutaway, or over-the-shoulder view.
 - Turn a screen toward another character only when the action clearly presents or shares it.
 - Orient paper content toward the person reading it. If the reader sits opposite the audience, the content may need a 180-degree rotation relative to the audience.
@@ -197,7 +200,14 @@ If the editing tool cannot constrain a region or preserve off-target pixels, tre
 
 ### Deterministic panel replacement
 
-When the page is assembled from independent panels, regenerate the failed panel from its unchanged panel contract and replace only that panel through the deterministic compositor. Record the old and new panel hashes plus the composed-page hash. Verify that all other panel inputs, layout fields, bubbles, text, and protected regions are unchanged. Describe this operation as `panel regeneration`, not as a pixel-local edit.
+Use this only when the production route is an explicitly accepted
+`panel-reconstruction` fallback. Regenerate the failed independent panel from
+its unchanged panel contract and replace only that panel through the
+deterministic compositor. Record the old and new panel hashes plus the
+reconstructed-page hash. Verify that all other panel inputs, layout fields,
+bubbles, text, and protected regions are unchanged. Describe this operation as
+`panel regeneration`, not as a pixel-local edit, and re-run editorial review;
+the reconstruction does not inherit the page-native artistic verdict.
 
 ## Pass and evidence boundary
 

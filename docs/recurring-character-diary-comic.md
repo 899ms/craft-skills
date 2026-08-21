@@ -10,10 +10,10 @@ diary-comic episodes around an existing authorized recurring character.
 It is not a comic-style prompt, a character-design tool, a workflow for
 imitating a named living artist, or a publishing bot. It turns story facts,
 identity invariants, cross-panel states, directional relations, and exact
-dialogue into inspectable contracts, then separates textless art, page
-composition, lettering, and final artifact review.
+dialogue into inspectable contracts, compares three story-directed page
+structures, and generates the selected complete page as one image by default.
 
-**Status: v0.1 experimental.** Structured workflows, compositor checks, and
+**Status: v0.2 experimental.** Structured workflows, compositor checks, and
 behavioral evals do not guarantee that a black-box image model will render every
 requirement correctly, and no acceptance state grants publication authority.
 
@@ -41,9 +41,9 @@ permanent identity.
 
 | Mode | Intended result |
 |---|---|
-| `Create` | Lock the story and visual contracts, generate textless candidates, compose the page, add exact dialogue, and inspect the final artifact. |
+| `Create` | Lock story and visual contracts, compare three page structures, generate one complete page, and inspect the exact final artifact on two axes. |
 | `Audit` | Inspect a supplied page and report identity, anatomy, text, relation, continuity, and layout evidence without editing it. |
-| `Repair` | Audit first, then regenerate one failed independent panel or produce a constrained repair specification without redrawing passing content. |
+| `Repair` | Audit first, prefer one constrained page-local edit, and reconstruct panels only after the disclosed fallback gate. |
 
 ## Install
 
@@ -85,9 +85,11 @@ I own the attached recurring-character references. Turn this anecdote into a
 five-panel diary comic: she puts her lunch box beside the door so she cannot
 forget it, then steps over it on the way out.
 
-Lock the story, identity invariants, and all dialogue first. Generate textless
-panels, inspect their native-resolution crops, then compose and letter the page
-deterministically. Do not add a logo, watermark, or publish anything.
+Lock the story, identity invariants, and all dialogue first. Compare three
+structurally different page skeletons at working size and 25%, then generate
+the selected complete page as one image. Increase prompt and QA attention for
+risky hands, directional objects, and state changes without silently splitting
+the page. Do not add a logo, watermark, or publish anything.
 ```
 
 ### Audit
@@ -118,20 +120,17 @@ specification instead of regenerating the whole page.
 3. **Visual contract.** Give important characters, objects, states, and
    relations stable IDs, then classify requirements as story-critical `S0`,
    identity-critical `S1`, or replaceable composition preference `S2`.
-4. **Risk route.** Use whole-page generation only for eligible low-risk pages.
-   Use panel-by-panel generation for longer or multi-character episodes, and
-   generate the decisive causal panel first when the relation is difficult.
-5. **Layout preflight.** Prove that the intended crop can retain all required
-   faces, hands, actions, speaker anchors, and protected regions before spending
-   another stochastic art attempt.
-6. **Textless art first.** Keep bubbles and text out of image-model output by
-   default. Freeze accepted panel inputs, then assemble and letter them with the
-   compositor.
-7. **Artifact QA.** Inspect the actual original-resolution panel, selected crop,
-   unlettered page, and lettered final. A correct prompt or successful command
-   is not acceptance evidence.
-8. **Bounded repair.** Replace one failed panel or a verifiably constrained
-   region; never hide a broad redraw behind the word “repair.”
+4. **Page-structure selection.** Compare three structurally different skeletons
+   at working size and exactly 25%; select the story fit instead of a grid.
+5. **Risk focus.** Risk controls prompt specificity, enlarged QA, and stopping;
+   it does not automatically decompose the page.
+6. **Page-native default.** Generate panel topology, scenery, cast, props,
+   bubbles, exact dialogue, paper, palette, and negative space together.
+7. **Artifact QA.** Inspect the exact final hash at original resolution and 25%
+   on separate contract-fidelity and editorial-layout axes.
+8. **Bounded fallback.** Prefer one local edit. Use full-page deterministic
+   lettering only when text fails, and panel reconstruction only after two
+   matching failures plus explicit acceptance of the tradeoff.
 
 ## Technical acceptance versus showcase quality
 
@@ -151,12 +150,11 @@ remain separate states.
 
 ## Deterministic composition
 
-The optional compositor reads a locked manifest, verifies source hashes and
-geometry, assembles independent panels, protects action regions, and renders
-approved bubbles and exact Simplified Chinese text. It supports rectangular and
-irregular panel footprints, bounded rotation, explicit overlap, z-order, and a
-deterministic paper matte. Unknown manifest keys fail closed so misspelled
-geometry fields are not silently ignored.
+The optional compositor normally renders approved closed soft-tail bubbles and
+exact Simplified Chinese text onto one accepted full-canvas unlettered page.
+Only an explicitly accepted reconstruction fallback assembles independent
+panels. It verifies source hashes, geometry, protected regions, and fonts;
+unknown manifest keys fail closed.
 
 ```sh
 python3 \
@@ -175,7 +173,7 @@ byte identity is not promised.
 The public suite is documented in
 [`evals/recurring-character-diary-comic`](../evals/recurring-character-diary-comic/README.md).
 It covers routing, Create/Audit/Repair boundaries, rights safety, story and
-visual contracts, risk routes, relation evidence, layout feasibility, and the
+visual contracts, page-native routing, relation evidence, layout selection, and the
 two-axis publication gate.
 
 ```sh

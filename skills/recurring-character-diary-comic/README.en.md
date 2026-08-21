@@ -3,16 +3,16 @@
 [简体中文](README.md) | [English](README.en.md)
 
 An experimental Agent Skill for creating, auditing, and locally repairing
-4–8 panel diary comics around an existing authorized recurring character.
+4–8 panel page-native diary comics around an existing authorized recurring character.
 
 It is more than a style prompt: the workflow locks story facts, recurring
 identity, cross-panel states, directional relations, and exact dialogue before
-generation. It then separates textless art, deterministic composition,
-Simplified Chinese lettering, contract QA, and editorial-layout review.
+generation, compares three story-directed page structures, and generates the
+selected complete page as one image by default.
 
 [![Generated-original irregular diary-comic example](../../assets/examples/recurring-character-diary-comic/recurring-character-diary-comic-cover.png)](../../docs/recurring-character-diary-comic.md)
 
-**Status: v0.1 experimental.** Technical acceptance, showcase readiness, user
+**Status: v0.2 experimental.** Technical acceptance, showcase readiness, user
 acceptance, and publication authority remain separate states.
 
 ## When to use it
@@ -29,9 +29,9 @@ artist, unauthorized franchise characters, watermarking, or social publishing.
 
 | Mode | Result |
 |---|---|
-| `Create` | Lock story and visual contracts, generate bounded candidates, compose, letter, and inspect the final page. |
+| `Create` | Lock story and visual contracts, compare three page structures, generate the complete page, and inspect its exact pixels on two axes. |
 | `Audit` | Inspect an existing artifact and report evidence without silently editing it. |
-| `Repair` | Audit first, then replace one failed panel or return a constrained repair specification. |
+| `Repair` | Audit first, prefer one constrained page-local edit, and reconstruct panels only after the disclosed fallback gate. |
 
 ## Install
 
@@ -62,8 +62,10 @@ Use $recurring-character-diary-comic in Create mode.
 
 I own the generation and editing rights for the attached recurring character.
 Turn this anecdote into a five-panel diary comic. Lock the story, identity
-invariants, speakers, and exact dialogue first. Generate textless panels, inspect
-their original pixels and target crops, then compose and letter deterministically.
+invariants, speakers, and exact dialogue first. Compare three structurally
+different page skeletons at working size and 25%, then generate the selected
+complete page as one image. Increase prompt and QA attention for risky hands,
+directional objects, and state changes without silently splitting the page.
 Do not add a logo, watermark, or publish anything.
 ```
 
@@ -74,17 +76,22 @@ Do not add a logo, watermark, or publish anything.
    forbidden drift.
 3. Story and visual contracts classify story-critical `S0`, identity-critical
    `S1`, and replaceable composition `S2` requirements.
-4. Risk routing selects `whole-page`, `panel-by-panel`, or `key-panel-first`.
-5. Layout preflight proves that crops preserve faces, hands, actions, speaker
-   anchors, and protected regions before more art attempts are spent.
-6. Art is generated without text or bubbles by default, then composed and
-   lettered deterministically.
-7. QA inspects original panels, selected crops, the unlettered page, and the
-   lettered final artifact.
-8. Repair cannot redraw unrelated passing content and claim to be local.
+4. Three structurally different page skeletons are compared at working size
+   and exactly 25%; the story fit is selected instead of a default grid.
+5. Risk controls prompt specificity, enlarged QA, and stopping. It does not
+   automatically decompose the page.
+6. `page-native` generates panel topology, scenery, cast, props, bubbles,
+   exact dialogue, paper, palette, and negative space together.
+7. QA inspects the exact final hash at original resolution and 25% on separate
+   contract-fidelity and editorial-layout axes.
+8. Prefer one local edit. Use full-page deterministic lettering only when text
+   fails, and panel reconstruction only after its explicit fallback gate.
+
+![Compare three whole-page skeletons for the same story](../../assets/examples/recurring-character-diary-comic/page-native-three-skeletons.png)
 
 Generation budgets are lineage-wide: starting a new run does not reset the
-total, per-panel, or no-improvement limits.
+page-wide or no-improvement limits. Per-panel limits exist only after an
+accepted reconstruction fallback.
 
 ## Two independent acceptance axes
 
@@ -100,10 +107,14 @@ ending insufficient visual weight.
 
 ## Deterministic composition
 
-The optional compositor binds source hashes, crops, frames, protected regions,
-font bytes, bubbles, and exact Simplified Chinese strings. It supports irregular
-polygons, bounded rotation, explicit overlap, z-order, and deterministic paper
-matte. Unknown manifest keys fail closed.
+The optional compositor normally renders approved closed soft-tail bubbles and
+exact Simplified Chinese text onto one accepted full-canvas unlettered page.
+Only an explicitly accepted `panel-reconstruction` route assembles independent
+panels. It binds source hashes, geometry, protected regions, font bytes, and
+exact strings; unknown manifest keys fail closed.
+
+Start from `templates/page-native-lettering-manifest.example.json` for the
+default text fallback. The older compositor template is reconstruction-only.
 
 ```sh
 python3 \

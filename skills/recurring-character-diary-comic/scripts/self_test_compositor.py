@@ -19,6 +19,7 @@ from PIL import Image, ImageDraw
 HERE = Path(__file__).resolve().parent
 COMPOSITOR = HERE / "compose_panels.py"
 TEMPLATE_MANIFEST = HERE.parent / "templates/compositor-manifest.example.json"
+PAGE_NATIVE_TEMPLATE = HERE.parent / "templates/page-native-lettering-manifest.example.json"
 DEFAULT_FONTS = (
     Path("/System/Library/Fonts/Hiragino Sans GB.ttc"),
     Path("/System/Library/Fonts/STHeiti Medium.ttc"),
@@ -180,7 +181,7 @@ def make_manifest(font: Path, root: Path) -> dict[str, object]:
                 "shape": "ellipse",
                 "bbox": [420, 68, 724, 202],
                 "safe_region": [400, 52, 744, 270],
-                "tail": [[495, 190], [460, 248], [540, 194]],
+                "tail": [[500, 165], [460, 248], [570, 185]],
                 "fill": "#fffdf7",
                 "stroke": "#20201e",
                 "stroke_width": 3,
@@ -504,7 +505,7 @@ def main() -> int:
         v2_output_hash = digest(v2_output)
         v2_ledger_hash = digest(v2_ledger_path)
         v2_ledger = json.loads(v2_ledger_path.read_text(encoding="utf-8"))
-        if v2_ledger["schema_version"] != 2 or v2_ledger["compositor_version"] != "2.0.0":
+        if v2_ledger["schema_version"] != 2 or v2_ledger["compositor_version"] != "2.1.0":
             raise AssertionError(f"v2 version metadata drifted: {v2_ledger}")
         if v2_ledger["paper_matte"] != {
             "algorithm": "tiled-lcg-luminance-v1",
@@ -795,6 +796,72 @@ def main() -> int:
             "bubbles[0].text contains unknown field: 'font_sze'",
         )
 
+        (root / "pages").mkdir()
+        (root / "build").mkdir()
+        page_source = root / "pages/page-native.png"
+        make_panel(page_source, (1200, 1600), "#eee8dc", "#a57a56", 1)
+        page_native_manifest = json.loads(PAGE_NATIVE_TEMPLATE.read_text(encoding="utf-8"))
+        page_native_manifest["panels"][0]["source"] = "pages/page-native.png"
+        page_native_manifest["panels"][0]["expected_sha256"] = digest(page_source)
+        page_native_manifest["lettering"]["font_candidates"] = [str(font)]
+        page_native_path = root / "page-native-manifest.json"
+        write_json(page_native_path, page_native_manifest)
+        page_native_command = [
+            sys.executable,
+            str(COMPOSITOR),
+            "--manifest",
+            str(page_native_path),
+        ]
+        page_native_dry_run = run(page_native_command + ["--dry-run"])
+        if "panels=1" not in page_native_dry_run.stdout or "bubbles=1" not in page_native_dry_run.stdout:
+            raise AssertionError(f"page-native lettering template did not validate: {page_native_dry_run.stdout}")
+        run(page_native_command)
+        page_native_unlettered = root / "build/page-native.unlettered.png"
+        page_native_final = root / "build/page-native.final.png"
+        page_native_ledger = json.loads((root / "build/page-native.ledger.json").read_text(encoding="utf-8"))
+        with Image.open(page_source) as source_image, Image.open(page_native_unlettered) as copied_image:
+            if source_image.convert("RGB").tobytes() != copied_image.convert("RGB").tobytes():
+                raise AssertionError("page-native lettering changed the accepted unlettered page pixels")
+        if page_native_ledger["input_stage"] != "page-native-unlettered":
+            raise AssertionError(f"page-native input stage was not recorded: {page_native_ledger}")
+        if page_native_ledger["bubbles"][0]["tail_style"] != "soft-rounded":
+            raise AssertionError(f"soft-rounded tail style was not recorded: {page_native_ledger['bubbles']}")
+        if not page_native_final.is_file():
+            raise AssertionError("page-native lettering did not write the final artifact")
+
+        detached_tail = copy.deepcopy(page_native_manifest)
+        detached_tail["bubbles"][0]["tail"]["points"] = [  # type: ignore[index]
+            [700, 270],
+            [690, 320],
+            [760, 290],
+        ]
+        detached_tail["bubbles"][0]["tail"]["tip_trim"] = 16  # type: ignore[index]
+        assert_manifest_rejected(
+            detached_tail,
+            root / "page-native-detached-tail.json",
+            "soft-rounded order must be",
+        )
+
+        needle_tail = copy.deepcopy(page_native_manifest)
+        needle_tail["bubbles"][0]["tail"]["tip_trim"] = 2  # type: ignore[index]
+        assert_manifest_rejected(
+            needle_tail,
+            root / "page-native-needle-tail.json",
+            "tip_trim must be between",
+        )
+
+        split_page_native = copy.deepcopy(page_native_manifest)
+        duplicate_page = copy.deepcopy(split_page_native["panels"][0])  # type: ignore[index]
+        duplicate_page["id"] = "page-base-duplicate"
+        duplicate_page["reading_order"] = 2
+        duplicate_page["column"] = 2
+        split_page_native["panels"].append(duplicate_page)  # type: ignore[index]
+        assert_manifest_rejected(
+            split_page_native,
+            root / "page-native-split-source.json",
+            "page-native lettering requires exactly one full-canvas source",
+        )
+
         template_manifest = json.loads(TEMPLATE_MANIFEST.read_text(encoding="utf-8"))
         template_sizes = [(1536, 1024), (1024, 1024), (1024, 1024), (1536, 1024)]
         template_colors = [
@@ -833,6 +900,7 @@ def main() -> int:
             f"frozen-font/source replacement safety, atomic no-clobber commit, "
             f"v2 polygon/clockwise-rotation/z-order/controlled-overlap, "
             f"protected/bubble/text-overlap and self-intersection rejection, template validation, "
+            f"page-native pixel-preserving lettering, closed soft-rounded tails, "
             f"fail-closed unknown-key rejection, and deterministic paper matte; "
             f"v1_output_sha256={first_image_hash} "
             f"v2_output_sha256={v2_output_hash}"

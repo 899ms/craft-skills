@@ -409,7 +409,7 @@ def main() -> int:
         "forbidden_drift": ["missing glasses"],
     }
     visual_contract = {
-        "contract_version": "comic-v2",
+        "contract_version": "comic-v3",
         "task_id": "self-test",
         "artifact_type": "recurring-character-diary-comic",
         "sources": [{"id": "story"}],
@@ -425,7 +425,7 @@ def main() -> int:
         "panels": [{"id": "p1", "required_states": ["lead-p1"], "required_relations": []}],
         "global_rules": [{"id": "one-panel", "level": "S0", "source": "story"}],
         "unknowns": [],
-        "routing": {"mode": "whole-page", "proof_panels": []},
+        "routing": {"mode": "page-native", "high_risk_focus_panels": []},
     }
     composition_ledger = {
         "schema_version": 1,

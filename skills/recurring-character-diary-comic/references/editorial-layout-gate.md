@@ -25,25 +25,30 @@ permission to publish as separate user decisions.
 
 ## Required checks
 
-Review the original-resolution final page and also inspect its whole-page
-silhouette at normal reading or thumbnail size. Record `pass`, `fail`, or
+Review the original-resolution final page and also inspect the same artifact at
+exactly 25%. Record `pass`, `fail`, or
 `not-verified` plus a concrete visual locator for every check.
 
 | Check ID | Pass condition |
 | --- | --- |
 | `reading_path` | The eye reaches every panel and bubble in the intended order without backtracking or guessing. |
 | `beat_hierarchy` | Setup, anchor, reaction, turn, and final beat receive visibly different weight that agrees with their narrative jobs. |
-| `panel_shape_rhythm` | Panel proportions and placement create deliberate pacing rather than a resized set of interchangeable cards. |
+| `panel_shape_rhythm` | Panel proportions and placement preserve the selected story-directed skeleton and create deliberate pacing rather than a resized set of interchangeable cards. |
 | `border_language` | Borders, corners, gutters, overlaps, or open edges form an intentional page language; one repeated container treatment does not flatten every beat. |
 | `inset_integrity` | Small or floating panels read as deliberate reactions or details; they do not look detached, accidentally cropped, or anatomically severed. |
 | `negative_space_intent` | Large empty regions frame a beat, hold lettering, or create a deliberate pause; they do not look like leftover packing space. |
 | `final_beat_emphasis` | The punchline or final viewpoint has enough scale, clarity, contrast, or stillness to land after the preceding panels. |
-| `thumbnail_silhouette` | At whole-page thumbnail size, the composition still reads as a paced comic page rather than a dashboard or card grid. |
+| `thumbnail_silhouette` | At exactly 25%, the composition still reads as one paced comic page rather than a dashboard or card grid. |
 
 Do not require diagonal borders, rotation, overlap, or border breaks merely for
 decoration. A quiet rectilinear page can pass when its hierarchy and rhythm are
 clearly intentional. The gate judges the resulting page, not the number of
 effects used.
+
+For a page-native final, also verify one coherent line language, paper texture,
+palette, environmental space, and character scale system across the complete
+page. For a reconstructed fallback, disclose that route and do not infer
+coherence from individually accepted panels.
 
 ## Accidental card-grid test
 

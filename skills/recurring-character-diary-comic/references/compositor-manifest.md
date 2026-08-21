@@ -1,6 +1,9 @@
-# Deterministic panel compositor manifest
+# Deterministic lettering and reconstruction manifest
 
-`scripts/compose_panels.py` assembles separately generated, already-selected panel images. It does not generate art, infer a layout, repair a panel, or judge whether the story evidence is correct.
+`scripts/compose_panels.py` has two bounded uses: render exact bubbles and text
+onto one accepted complete unlettered page, or reconstruct an explicitly
+accepted fallback from separately generated panels. It does not generate art,
+choose a page structure, repair an image, or judge story evidence.
 
 ## Contents
 
@@ -21,7 +24,11 @@ No font, generated image, character, or private case asset is distributed with t
 
 ## Run
 
-`templates/compositor-manifest.example.json` is a schema template, not a directly runnable fixture. Before using either command below, copy it to a working directory, replace every panel path and all-zero `expected_sha256` placeholder with the accepted artifact's real path and hash, choose real output paths, and create every output parent directory.
+Use `templates/page-native-lettering-manifest.example.json` for the default
+text fallback. Use `templates/compositor-manifest.example.json` only for a
+disclosed panel-reconstruction fallback. Both are structural templates, not
+directly runnable fixtures. Replace every source path and all-zero hash,
+choose real output paths, and create each output parent directory.
 
 Validate every path, frozen hash, decoded image, declared size, crop, frame, reading order, protected region, bubble, font glyph, and final text fit without writing output:
 
@@ -49,16 +56,18 @@ python3 scripts/self_test_compositor.py
 ## Shared fields
 
 - `schema_version`: use `1` for an existing rectangular manifest or `2` for polygon, rotation, controlled overlap, z-order, or paper matte.
-- `artifact_stages.panel_inputs`: exactly `unlettered-panel`.
-- `artifact_stages.composition`: exactly `unlettered-page`. These are artifact stages from the comic run record, not run checkpoints.
+- `artifact_stages`: use `page-native-unlettered -> page-native-unlettered`
+  for full-page lettering, or `unlettered-panel -> unlettered-page` for a
+  reconstruction fallback. These are artifact stages, not run checkpoints.
 - `canvas.size`: exact `[width, height]`, with neither edge above 16,384 pixels and no more than 8,000,000 total pixels because overlays render at 4×.
 - `canvas.background`: opaque `#RRGGBB`.
-- `panels`: one entry per independently generated panel.
+- `panels`: one full-canvas borderless source for page-native lettering, or one
+  entry per independently generated reconstruction panel.
   - `id`: unique stable panel id.
   - `reading_order`: consecutive `1..N`.
   - `row`, `column`: consecutive semantic reading rows and left-to-right positions.
   - `source`: input path, resolved relative to the manifest.
-  - `expected_sha256`: lowercase SHA-256 of the accepted `unlettered-panel`. Replace the zero placeholders in the example manifest; a changed file is rejected even when its dimensions match.
+  - `expected_sha256`: lowercase SHA-256 of the accepted source. Replace the zero placeholders; a changed file is rejected even when its dimensions match.
   - `expected_size`: exact decoded source dimensions. A mismatch is a hard error.
   - `source_crop`: `[left, top, right, bottom]` inside the source. Its aspect ratio must match `frame` within 1%; adjust the crop instead of stretching artwork.
   - `frame`: pre-rotation destination box inside the canvas.
@@ -73,7 +82,11 @@ python3 scripts/self_test_compositor.py
   - `shape`: `ellipse` or `rounded_rect`.
   - `bbox`: exact final-page bubble bounds.
   - `safe_region`: approved final-page placement region. The bubble and tail, including a conservative stroke and resampling margin, must remain inside it.
-  - `tail`: either empty or exactly three final-page-coordinate points.
+  - `tail`: either empty, exactly three legacy points, or in schema v2 a
+    `{style: soft-rounded, points: [...], tip_trim: N}` object. A non-empty
+    tail must overlap the body durably, extend outside it, retain a connected
+    white interior, and form one hole-free silhouette. New work should use the
+    tagged soft-rounded form.
   - `allow_overlap_with`: schema-v2-only array of other bubble ids. A visual-bounds overlap requires mutual declaration. This can authorize a restrained shape/tail intersection, but can never authorize either bubble to cover the other's locked text box.
   - `text`: optional locked Simplified Chinese lettering.
     - `language` must be `zh-Hans`.
@@ -86,6 +99,13 @@ python3 scripts/self_test_compositor.py
 - `output.image`, `output.ledger`: fixed output paths, resolved relative to the manifest. Their parent directories must already exist. Outputs may not alias the manifest or any panel, including case-folded and Unicode-normalized aliases.
 
 All boxes use right/bottom-exclusive bounds. Polygon points are page coordinates before panel rotation and may sit on a frame edge.
+
+For `page-native-unlettered`, the manifest must contain exactly one source whose
+decoded size, crop, and frame equal the canvas; it must be reading order, row,
+and column 1 with no border, clip, rotation, z offset, or overlap permission.
+This preserves the complete generated page as one art object. The script emits
+an unlettered snapshot and the lettered final; verify that the unlettered output
+is pixel-identical to the accepted source.
 
 All schema-bearing objects fail closed on unknown keys: the top-level manifest, `artifact_stages`, `canvas`, `canvas.paper_matte`, every panel, panel border, protected region, bubble, bubble text block, `lettering`, and `output`. A typo such as `rotation_degree`, `clip_polgyon`, `speaker_achor`, or `font_sze` is a hard error with the exact object path; it is never ignored as inert metadata. Keep run notes and application-specific metadata in a separate run record instead of adding undeclared manifest fields.
 

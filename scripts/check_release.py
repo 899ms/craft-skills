@@ -152,9 +152,17 @@ APPROVED_ASSETS = {
         "assets/examples/recurring-character-diary-comic/"
         "recurring-character-diary-comic-cover.png"
     ): (
-        "aef95d57385e4888351cc91172d144f13488596215ebe47d9a76fa7bf3619954",
-        643725,
+        "7c4279d55f74b1669fe6d01ffb7e70bd636fea11f817fc8c2e9894c1a2bfe6d4",
+        730057,
         (1000, 400),
+    ),
+    Path(
+        "assets/examples/recurring-character-diary-comic/"
+        "page-native-three-skeletons.png"
+    ): (
+        "2a801cbbff3bd5fcd9a5db68d3f3d628f57015e6cb218cb8548157f090bdf07f",
+        121502,
+        (1600, 900),
     ),
     Path(
         "skills/native-transparent-imagegen/assets/"
