@@ -159,13 +159,13 @@ risk_oracle:
       numeric_score_band: 0-2
       description: One recurring character, at most four panels, no directional reading object, no exact multi-object contact,
         and no cross-panel physical causality beyond simple presence or clothing state.
-      generation_route: whole-page
+      generation_route: page-native
     L2:
       label: medium
       numeric_score_band: 3-5
       description: Five to eight panels, multiple characters, asymmetric identity, exact prop continuity, or several independent
         state checks, but no single story beat depends on a difficult contact, insertion, force, or directional-reading relationship.
-      generation_route: panel-by-panel
+      generation_route: page-native
     L3:
       label: high
       numeric_score_band: 6-10
@@ -173,15 +173,14 @@ risk_oracle:
         S0 causal relation. Preserve the raw score and record expected_risk_override: decisive-s0-causal-relation.'
       description: 'A panel with effective high risk: raw score 6–10, or the decisive S0 causal relationship such as passes-through,
         inserts-into, transfers-to, pulls-toward, pours-into, or another visible state-changing chain.'
-      generation_route: key-panel-first
+      generation_route: page-native
   generation_routes:
-    whole-page: Allowed only when every panel scores 0–2, total page risk is at most 6, there are at most four panels, and
-      there is no S0 causal relation, directional surface, or multi-character contact. The artifact still requires original-resolution
-      inspection.
-    panel-by-panel: Generate independent clean-art panels, freeze each panel accepted-for-next-stage, compose the page deterministically,
-      and add bubbles and approved text deterministically.
-    key-panel-first: Generate and inspect the hardest proof panel before ordinary panels. Freeze it only when all required
-      evidence for the relation is visible; then generate the remaining panels one by one.
+    page-native: Default for every eligible episode. Generate the selected complete page as one image; risk increases prompt
+      specificity and enlarged QA but never silently decomposes the page.
+    page-native-unlettered: Use only when the complete page art passes but dialogue remains incorrect. Render exact bubbles
+      and text onto one full-canvas unlettered source without reconstructing its panels.
+    panel-reconstruction: Use only after two page-native attempts fail the same named S0/S1 field, one local edit cannot isolate
+      it, and the user explicitly accepts the loss of whole-page coherence.
 cases:
 - id: direct_create_from_owned_character
   suite: routing_create
@@ -190,15 +189,15 @@ cases:
     status: none
   expected_route: trigger/create
   expected_risk: L2
-  expected_generation_route: panel-by-panel
+  expected_generation_route: page-native
   request: 我有一个自己设计并拥有使用权的固定主角，角色设定图和外套上的专属徽记参考都已附上。 请把“她为避免忘带午饭，把饭盒放在门口，出门时却顺手跨了过去”画成一篇 5 格日记漫画。
   expected_behavior:
   - 触发 recurring-character-diary-comic，并选择 Create 模式。
   - 先区分角色身份参考与徽记的精确参考，再检查题材是否具有可画行为、未说出口的心理和轻微反转。
   - 在生成前锁定 S0 故事约束、S1 身份约束、S2 构图偏好、逐格节拍、阅读顺序和全部对白。
   - 因为是 5 格并含饭盒跨格位置状态，判为 L2；“跨过去”需要可见空间证据，但不含穿过、插接、流向或方向阅读物等强制 L3 因素。
-  - 逐格生成并冻结通过面板，最后确定性拼版与确定性加字；若合同后来加入高风险接触或因果，再重新计分而不是沿用 L2。
-  - 生成实际页面后检查原始分辨率成品，再分别报告 planned、generated、inspected 或 accepted 的真实状态。
+  - 生成前比较三种结构不同的页面骨架并在 25% 下选出故事最合适的一种；L2 风险增加饭盒位置证据的提示词与放大 QA，不触发拆格。
+  - 默认一次生成完整页面；生成后检查同一最终 hash 的原始分辨率和 25% 成品，再分别报告 planned、generated、inspected 或 accepted 的真实状态。
   must_not:
   - 跳过角色身份约束、脚本锁定或成品视觉检查就宣称完成。
   - 擅自增加品牌、水印、随机文字或发布动作。
@@ -209,13 +208,13 @@ cases:
     status: none
   expected_route: trigger/create
   expected_risk: L2
-  expected_generation_route: panel-by-panel
+  expected_generation_route: page-native
   request: 还是用我那位总戴方框眼镜、背帆布包的原创主角。她每晚把第二天的任务写满便签， 早上却先把最难的那张压到杯垫下面。帮我把这个小故事做成一页，最后一格安静一点，台词越少越好。
   expected_behavior:
   - 即使请求没有说“日记漫画”或点名技能，也应根据固定原创主角、一页叙事和逐格节奏触发 Create。
   - 复用已有角色档案，确认眼镜和帆布包属于身份不变量还是本集变量，并把便签与杯垫写入连续性要求。
   - 从具体行为、逃避心理和轻微自我揭示提炼故事脊柱，再选择 4–8 格中合适的格数；允许结尾静默。
-  - 把多格道具状态判为 L2，使用逐格生成；文字由确定性排版阶段处理。
+  - 把多格道具状态判为 L2，在整页 prompt 与 QA 中加强便签/杯垫状态；仍采用 page-native，只有文字失败才使用全页确定性加字。
   must_not:
   - 把请求当成普通单图插画，只输出一段图像提示词。
   - 为了凑格数加入与原始观察无关的事件、说教或广告式结论。
@@ -323,7 +322,7 @@ cases:
     status: none
   expected_route: trigger/create
   expected_risk: L2
-  expected_generation_route: panel-by-panel
+  expected_generation_route: page-native
   request: '继续做现有原创主角的这一集。请把下面三句对白原样放进漫画，字符、标点、说话人和顺序都不能变：
 
     第 1 格／主角／“我只是看一眼。”
@@ -333,11 +332,11 @@ cases:
     第 5 格／主角／“清单明天再用。”'
   expected_behavior:
   - 把三句对白列为 S0，锁定每句的简体中文字符、全角标点、说话人、所属格和气泡顺序。
-  - 生成无字干净画面，确定性绘制气泡和文字，再对实际成品逐字比对。
+  - 默认在整页原生候选中核验逐字对白；只有页面艺术通过而文字失败时，才生成一张完整无字页并确定性加字。
   - 发现错字、繁简转换、改写、额外文字、错人或顺序歧义时不得通过。
   must_not:
   - 为了“更自然”而润色、缩写、翻译或改动任一批准字符串。
-  - 把准确中文继续作为整页生图模型的偶然输出，或在文字未核验时称页面为 accepted。
+  - 把未经逐字核验的整页中文当作正确，或在文字未核验时称页面为 accepted。
 - id: reject_weak_abstract_premise
   suite: create_contract
   execution_kind: semantic
@@ -491,12 +490,12 @@ cases:
     status: none
   expected_route: trigger/create
   expected_risk: L1
-  expected_generation_route: whole-page
+  expected_generation_route: page-native
   request: 继续画我的原创主角阿澄。四格：她穿好外套准备出门，看见窗外下雨，停一下， 最后一格已经脱掉外套坐回沙发。只有她一个人，不出现手机、纸张、屏幕或复杂道具。
   expected_behavior:
   - 将穿着状态和四个节拍写入 S0，将角色身份写入 S1，将机位与格形写入 S2。
-  - 因单人物、4 格、无方向阅读物和复杂物理接触，判为 L1，可尝试一次整页无字画面。
-  - 成品仍需逐格原始分辨率审核；若整页失败，不在整页上反复抽卡，而是升级到逐格生成。
+  - 因单人物、4 格、无方向阅读物和复杂物理接触，判为 L1；比较三种页面骨架后采用 page-native。
+  - 成品仍需逐格证据盘点及原图/25% 双轴审核；第一次失败后只允许一次有针对性的整页尝试，不自动切换逐格生成。
   must_not:
   - 把 L1 等同于免检或自动 accepted。
   - 让模型直接生成未锁定或未经核验的中文文字。
@@ -507,12 +506,12 @@ cases:
     status: none
   expected_route: trigger/create
   expected_risk: L2
-  expected_generation_route: panel-by-panel
+  expected_generation_route: page-native
   request: 继续画我的原创主角阿澄，旁边加一个只负责见证的原创同事。做 6 格：阿澄把一只未拆的纸箱 一格一格挪到椅子后面，以为别人看不见，最后同事安静地把椅子往旁边让了一点。不要出现纸箱交接或插接动作。
   expected_behavior:
   - 锁定两人的身份差异、同事的 witness 职能、唯一纸箱及其跨格位置状态。
-  - 因 6 格、双人物和精确道具连续性判为 L2，分别生成无字面板，逐格冻结通过结果，再确定性拼版和加字。
-  - 任何失败只重生该独立面板，不得破坏已通过面板。
+  - 因 6 格、双人物和精确道具连续性判为 L2；在整页 prompt 和放大 QA 中强化两人身份、纸箱位置和见证关系，仍采用 page-native。
+  - 单一可隔离缺陷优先做一次局部编辑并比较区域外像素；不能因为风险较高就预先拆成独立面板。
   must_not:
   - 把 witness 写成第二主角、额外说教者或新的剧情触发者。
   - 为追求页面统一而重新生成已经通过的面板。
@@ -523,10 +522,10 @@ cases:
     status: none
   expected_route: trigger/create
   expected_risk: L3
-  expected_generation_route: key-panel-first
+  expected_generation_route: page-native
   request: 继续画我的原创主角岑禾，做成 4 格。第 3 格必须看清：她转身拉走毛巾，毛巾一角穿过杯把并绷紧朝向水槽； 她的手没有直接碰杯子。第 4 格杯子被拖进水槽。前两格只是铺垫。
   expected_contract:
-    contract_version: comic-v2
+    contract_version: comic-v3
     task_id: eval-v2-towel-through-handle
     artifact_type: recurring-character-diary-comic
     sources:
@@ -664,7 +663,7 @@ cases:
     global_rules:
     - id: no-unapproved-text
       level: S0
-      rule: art stage contains no letters, numbers, labels, logos, bubbles, or watermarks
+      rule: final page contains only exact approved dialogue; an unlettered fallback contains no text or bubbles
       source: locked-story
     - id: lead-identity
       level: S1
@@ -672,17 +671,17 @@ cases:
       source: lead-profile
     unknowns: []
     routing:
-      mode: key-panel-first
-      proof_panels:
+      mode: page-native
+      high_risk_focus_panels:
       - p3
       - p4
       reason: the decisive S0 passes_through relation must visibly produce the p4 mug state
   expected_behavior:
-  - 判为 L3，先单独生成关键证明格并按 relation 字段检查；未通过时不生成普通格。
-  - 关键格通过后冻结，再逐格生成其余画面，最后确定性拼版与加字。
+  - 判为 L3，把 p3/p4 写成整页 prompt 与原图 QA 的高风险聚焦区域，但仍生成一张完整页面。
+  - 在完整页面上按 relation 字段审核 p3 接触、拉力方向和 p4 下一状态；风险不自动触发拆格。
   - 审核接触点、拉力方向和下一状态；仅出现毛巾与杯子不能算因果成立。
   must_not:
-  - 把 YAML 关系重新压成一段模糊长提示词后整页生成。
+  - 把结构化关系压成一句模糊“毛巾和杯子互动”后生成。
   - 用共同出现、二维重叠或下一格突然换状态冒充 passes-through 与 pulls-toward。
 - id: v2_decisive_s0_overrides_medium_raw_score
   suite: risk_route_override
@@ -693,12 +692,12 @@ cases:
   expected_risk: L3
   expected_raw_score: 5
   expected_risk_override: decisive-s0-causal-relation
-  expected_generation_route: key-panel-first
+  expected_generation_route: page-native
   request: 继续画已有授权固定主角阿澄的四格日记漫画。前两格只是她把一个普通小球忘在台面后离开； 第三格不出现人物或手，必须看清小球滚动接触杯子并把杯子撞向水槽；第四格杯子已在水槽里。 球和杯子的外观不是身份不变量，也不要求任何文字或方向性纸张，真正决定故事的是第三格的可见因果。
   expected_behavior:
   - 记录第三格 raw score 5：跨格状态 +1、精确接触 +1、物理因果 +3。
   - 因该格承载决定剧情的 S0 因果链，保留 raw score 5，同时用 decisive-s0-causal-relation override 将有效风险分类为 L3。
-  - 采用 key-panel-first，第三格未通过接触、运动方向和下一状态证据前，不生成普通铺垫格。
+  - 采用 page-native，并把第三格的接触、运动方向和下一状态证据作为整页 prompt 与放大 QA 的决定性焦点。
   must_not:
   - 因 raw score 落在 3–5 就机械标成 L2 或先生成整套普通面板。
   - 为凑到 6 分而虚构手、身份标记、精确道具外观或方向性文字对象。
@@ -710,17 +709,17 @@ cases:
     status: none
   expected_route: trigger/create
   expected_risk: L2
-  expected_generation_route: panel-by-panel
+  expected_generation_route: page-native
   request: 继续用我已有并授权的两位固定角色画一篇 5 格日记漫画。最后一格必须同时看清： 主角坐在同一张沙发上的臀胯与座垫接触、配角完整头脸和站姿、两人之间不接触的空隙， 以及分别属于两人的两句对白。当前草图把最后一格做成很浅的横条，其他阅读顺序可以不变。
     请先决定生成和拼版流程，不要直接出图。
   expected_behavior:
-  - 判为 L2 并采用 panel-by-panel；先固定 canvas 与阅读顺序，在全页 feasibility 通过后再共同冻结所有相互影响的 frame。
-  - 在任何随机生图前，把坐姿接触、完整身份、非接触间隙、speaker anchor、气泡 safe region 与 protected region 投影到最后一格，检查目标宽高比是否能同时容纳。
-  - 若浅横条不可行，先调整属于 S2 的最后一格比例或裁切计划，再生成；实际源图通过后还要用精确 crop 重做一次证据检查，写入 manifest 后才冻结。
+  - 判为 L2 并采用 page-native；先画三种结构不同的页面骨架，在工作尺寸和 25% 下确认最后一格能容纳全部证据与对白。
+  - 在任何随机生图前，把坐姿接触、完整身份、非接触间隙、说话人归属和对白空间投影到最后一格的阅读区域。
+  - 若浅横条不可行，先调整属于 S2 的最后一格比例或整体页面策略，再生成；不要先固定逐格 crop/frame。
   must_not:
-  - 在已知 frame 无法同时容纳证据与对白时反复消耗生图次数。
-  - 只因原始大图完整就接受一个裁掉头脸、坐姿接触或 speaker 证据的页面 crop。
-  - 在 compositor manifest 已锁定后静默改 crop 并沿用旧 artifact 哈希或旧验收结论。
+  - 在已知页面骨架无法同时容纳证据与对白时反复消耗生图次数。
+  - 只因单个局部好看就接受一张在完整页面中裁掉头脸、坐姿接触或说话人证据的候选。
+  - 在选定页面策略后静默换成机械横条或卡片宫格并沿用旧验收结论。
 - id: v2_contract_tier_prevents_false_failure
   suite: contract_tiering
   execution_kind: artifact-bound
@@ -1071,6 +1070,60 @@ cases:
   - 把第 2 格的二维纸片朝向臆测为朝向角色，或把第 3 格单纯打字臆测为正在录入该收据。
   - 为显得严格而虚构发夹、身份、手指、额外文字、手机、电脑或最终分堆的失败。
   - 在任一必需资产不可读时猜测 fail；缺证据时应返回 not-verified。
+- id: page_native_directional_surfaces_do_not_force_decomposition
+  suite: relation_contract
+  execution_kind: semantic
+  fixture:
+    status: none
+  expected_route: trigger/create
+  expected_risk: L3
+  expected_raw_score: 7
+  expected_generation_route: page-native
+  request: 继续使用我已授权的固定原创主角做四格日记漫画。第一格她操作笔记本电脑；第二格她拿起同一张收据读正面；第三格把收据内容录入电脑；最后一格按收据分堆。屏幕、键盘、铰链、收据正面和她的视线、手势都必须物理一致。请不要因为这些关系难检查就把漫画默认拆成四张独立图。
+  expected_behavior:
+  - 把电脑和收据分别编译成方向性 surface 证据：reader/operator、content face、reader side、viewer side、hinge/controls、gaze/hands 和 visible proof。
+  - 判为 L3，但仍比较三种页面骨架并采用 page-native；风险只加强整页 prompt、原图放大 QA 和停止条件。
+  - 在同一最终 hash 上逐格验证屏幕、收据和跨格状态，再以 25% 检查整体页面语言。
+  must_not:
+  - 因存在屏幕、纸张或因果链就自动切成独立面板。
+  - 把人物、电脑和收据同框当作方向与操作关系已经成立。
+  - 让观众看到正面就假定当前角色也能从相反一侧正确阅读。
+- id: text_failure_uses_full_page_lettering_fallback
+  suite: risk_routing
+  execution_kind: semantic
+  fixture:
+    status: none
+  expected_route: trigger/create
+  expected_risk: L2
+  expected_raw_score: 4
+  expected_generation_route: page-native
+  request: 使用已有授权角色做五格日记漫画，三句简体中文必须逐字正确。请先保留整页构图和气氛；如果画面、人物和故事都通过，只是第二句总有错字，不要把页面切成五张图重做。
+  expected_behavior:
+  - 初始路线仍是 page-native，并逐字核验同一最终页上的三句对白。
+  - 只有完整页面的艺术与 S0/S1 证据通过而文字失败时，才切换到 page-native-unlettered。
+  - 全页无字候选必须保留选定页面节奏和对白空间；确定性加字把整张页作为一个 borderless full-canvas source。
+  must_not:
+  - 因文字风险预先生成五张无字单格。
+  - 为方便加字而重新设计内部边框、裁切或人物比例。
+  - 把未经逐字核验的中文当作通过。
+- id: panel_reconstruction_requires_disclosed_gate
+  suite: risk_routing
+  execution_kind: semantic
+  fixture:
+    status: none
+  expected_route: trigger/create
+  expected_risk: L3
+  expected_raw_score: 8
+  expected_generation_route: page-native
+  request: 继续画我的授权固定角色。故事有双人物交接、手部接触和跨格物件状态。为了好检查，你可以一开始就逐格生成再拼起来，但我仍希望最终像一次画完的完整漫画页。
+  expected_behavior:
+  - 说明“好检查”不能覆盖用户要求的整页艺术语言，初始路线保持 page-native。
+  - 两次整页尝试必须失败同一个命名 S0/S1，且一次局部编辑无法隔离，才可提出 panel-reconstruction。
+  - 只有用户看到艺术降级说明并明确接受后才生成独立面板；重构页使用新的 artifact stage 和双轴审核。
+  must_not:
+  - 把 L3、双人物或手部接触本身当成逐格生成授权。
+  - 静默交付卡片拼图并仍称其为 page-native。
+  - 让重构页继承整页原生候选的 editorial-layout 结论。
 - id: v2_polished_identity_text_hard_negative
   suite: negative_artifact_audit
   execution_kind: artifact-bound

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Deterministically compose validated panel images, bubbles, and locked zh-Hans text."""
+"""Deterministically letter a full page or reconstruct validated comic panels."""
 
 from __future__ import annotations
 
 import argparse
+from collections import deque
 import hashlib
 import io
 import json
@@ -18,16 +19,19 @@ from pathlib import Path
 from typing import Any, NoReturn
 
 import PIL
-from PIL import Image, ImageChops, ImageDraw, ImageFont, UnidentifiedImageError, features
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont, UnidentifiedImageError, features
 
 
-COMPOSITOR_VERSION = "2.0.0"
+COMPOSITOR_VERSION = "2.1.0"
 MAX_CANVAS_EDGE = 16_384
 MAX_CANVAS_PIXELS = 8_000_000
 MAX_SOURCE_PIXELS = 40_000_000
 MAX_SOURCE_FILE_BYTES = 128 * 1024 * 1024
 MAX_TOTAL_SOURCE_BYTES = 512 * 1024 * 1024
 OVERLAY_SCALE = 4
+MAX_BUBBLE_STROKE_WIDTH = 8
+MAX_TAIL_TIP_TRIM = 32
+SOFT_TAIL_CURVE_SEGMENTS = 12
 MAX_POLYGON_POINTS = 24
 MAX_ROTATION_DEGREES = 15.0
 MAX_ABS_Z_INDEX = 10_000
@@ -413,6 +417,246 @@ def validate_simple_polygon(points: tuple[tuple[int, int], ...], label: str) -> 
             second_end = float_points[(second_index + 1) % edge_count]
             if segments_intersect(first_start, first_end, second_start, second_end):
                 fail(f"{label} must be a simple non-self-intersecting polygon")
+
+
+def round_div_signed(numerator: int, denominator: int) -> int:
+    if denominator <= 0:
+        raise ValueError("denominator must be positive")
+    if numerator >= 0:
+        return (numerator + denominator // 2) // denominator
+    return -((-numerator + denominator // 2) // denominator)
+
+
+def soft_tail_trim_points(
+    tail: tuple[tuple[int, int], ...],
+    tip_trim: int,
+) -> tuple[tuple[int, int], tuple[int, int]]:
+    first_base, tip, second_base = tail
+    scale = OVERLAY_SCALE
+    tip_high = (tip[0] * scale, tip[1] * scale)
+    trim_distance = tip_trim * scale
+
+    def trim_toward_base(base: tuple[int, int]) -> tuple[int, int]:
+        delta_x = (base[0] - tip[0]) * scale
+        delta_y = (base[1] - tip[1]) * scale
+        squared_length = delta_x * delta_x + delta_y * delta_y
+        length = math.isqrt(squared_length)
+        if length * length < squared_length:
+            length += 1
+        return (
+            tip_high[0] + round_div_signed(delta_x * trim_distance, length),
+            tip_high[1] + round_div_signed(delta_y * trim_distance, length),
+        )
+
+    return trim_toward_base(first_base), trim_toward_base(second_base)
+
+
+def validate_tail_render_options(
+    tail: tuple[tuple[int, int], ...],
+    tail_style: str,
+    tail_tip_trim: int,
+    stroke_width: int,
+    label: str,
+) -> None:
+    if tail_style not in {"pointed", "soft-rounded"}:
+        fail(f"{label}.style must be pointed or soft-rounded")
+    if tail_style == "pointed":
+        if tail_tip_trim != 0:
+            fail(f"{label}.tip_trim is only valid with style soft-rounded")
+        return
+    if len(tail) != 3:
+        fail(f"{label}.style soft-rounded requires exactly three points")
+    minimum_tip_trim = max(2, stroke_width * 2)
+    tip = tail[1]
+    shortest_leg = min(
+        math.isqrt((base[0] - tip[0]) ** 2 + (base[1] - tip[1]) ** 2)
+        for base in (tail[0], tail[2])
+    )
+    maximum_tip_trim = min(MAX_TAIL_TIP_TRIM, shortest_leg // 2)
+    if maximum_tip_trim < minimum_tip_trim:
+        fail(f"{label} is too short for a soft-rounded tip at stroke_width {stroke_width}")
+    if not minimum_tip_trim <= tail_tip_trim <= maximum_tip_trim:
+        fail(
+            f"{label}.tip_trim must be between {minimum_tip_trim} and "
+            f"{maximum_tip_trim} for this tail and stroke"
+        )
+    first_trim, second_trim = soft_tail_trim_points(tail, tail_tip_trim)
+    cap_dx = first_trim[0] - second_trim[0]
+    cap_dy = first_trim[1] - second_trim[1]
+    minimum_cap = max(4, stroke_width * 2 + 2) * OVERLAY_SCALE
+    if cap_dx * cap_dx + cap_dy * cap_dy < minimum_cap * minimum_cap:
+        fail(
+            f"{label} soft-rounded tip is still needle-like; effective cap width "
+            f"must be at least {minimum_cap // OVERLAY_SCALE}px"
+        )
+
+
+def soft_rounded_tail_polygon(
+    tail: tuple[tuple[int, int], ...],
+    tip_trim: int,
+) -> tuple[tuple[int, int], ...]:
+    first_base, tip, second_base = tail
+    scale = OVERLAY_SCALE
+    first_trim, second_trim = soft_tail_trim_points(tail, tip_trim)
+    tip_high = (tip[0] * scale, tip[1] * scale)
+    curve: list[tuple[int, int]] = []
+    denominator = SOFT_TAIL_CURVE_SEGMENTS * SOFT_TAIL_CURVE_SEGMENTS
+    for step in range(SOFT_TAIL_CURVE_SEGMENTS + 1):
+        inverse = SOFT_TAIL_CURVE_SEGMENTS - step
+        curve.append(
+            (
+                round_div_signed(
+                    inverse * inverse * first_trim[0]
+                    + 2 * inverse * step * tip_high[0]
+                    + step * step * second_trim[0],
+                    denominator,
+                ),
+                round_div_signed(
+                    inverse * inverse * first_trim[1]
+                    + 2 * inverse * step * tip_high[1]
+                    + step * step * second_trim[1],
+                    denominator,
+                ),
+            )
+        )
+    return (
+        (first_base[0] * scale, first_base[1] * scale),
+        *curve,
+        (second_base[0] * scale, second_base[1] * scale),
+    )
+
+
+def bubble_shape_masks(
+    shape: str,
+    bbox: tuple[int, int, int, int],
+    corner_radius: int,
+    tail: tuple[tuple[int, int], ...],
+    stroke_width: int,
+    tail_style: str,
+    tail_tip_trim: int,
+) -> tuple[tuple[int, int], Image.Image, Image.Image, Image.Image]:
+    validate_tail_render_options(tail, tail_style, tail_tip_trim, stroke_width, "tail")
+    xs = [bbox[0], bbox[2], *(point[0] for point in tail)]
+    ys = [bbox[1], bbox[3], *(point[1] for point in tail)]
+    padding = stroke_width + 2
+    left = min(xs) - padding
+    top = min(ys) - padding
+    right = max(xs) + padding + 1
+    bottom = max(ys) + padding + 1
+    scale = OVERLAY_SCALE
+    size = ((right - left) * scale, (bottom - top) * scale)
+    body = Image.new("L", size, 0)
+    body_box = (
+        (bbox[0] - left) * scale,
+        (bbox[1] - top) * scale,
+        (bbox[2] - left) * scale - 1,
+        (bbox[3] - top) * scale - 1,
+    )
+    body_draw = ImageDraw.Draw(body)
+    if shape == "ellipse":
+        body_draw.ellipse(body_box, fill=255)
+    else:
+        body_draw.rounded_rectangle(body_box, radius=corner_radius * scale, fill=255)
+    tail_mask = Image.new("L", size, 0)
+    if tail:
+        if tail_style == "soft-rounded":
+            points = [
+                (x - left * scale, y - top * scale)
+                for x, y in soft_rounded_tail_polygon(tail, tail_tip_trim)
+            ]
+        else:
+            points = [((x - left) * scale, (y - top) * scale) for x, y in tail]
+        ImageDraw.Draw(tail_mask).polygon(points, fill=255)
+    return (left, top), body, tail_mask, ImageChops.lighter(body, tail_mask)
+
+
+def erode_mask(mask: Image.Image, radius: int) -> Image.Image:
+    result = mask
+    for _ in range(radius):
+        result = result.filter(ImageFilter.MinFilter(3))
+    return result
+
+
+def validate_bubble_tail_topology(
+    shape: str,
+    bbox: tuple[int, int, int, int],
+    corner_radius: int,
+    tail: tuple[tuple[int, int], ...],
+    stroke_width: int,
+    label: str,
+    tail_style: str,
+    tail_tip_trim: int,
+) -> None:
+    if tail:
+        validate_simple_polygon(tail, label)
+    origin, body, tail_mask, union = bubble_shape_masks(
+        shape,
+        bbox,
+        corner_radius,
+        tail,
+        stroke_width,
+        tail_style,
+        tail_tip_trim,
+    )
+    hole_probe = union.copy()
+    ImageDraw.floodfill(hole_probe, (0, 0), 127, thresh=0)
+    if hole_probe.histogram()[0]:
+        fail(f"{label} must not enclose a hole inside the bubble silhouette")
+    erosion_radius = stroke_width * OVERLAY_SCALE
+    interior = erode_mask(union, erosion_radius)
+    if interior.getbbox() is None:
+        fail(f"{label} leaves no white bubble interior after applying the stroke")
+    if not tail:
+        return
+
+    def point_is_in_body(point: tuple[int, int]) -> bool:
+        x = (point[0] - origin[0]) * OVERLAY_SCALE
+        y = (point[1] - origin[1]) * OVERLAY_SCALE
+        return 0 <= x < body.width and 0 <= y < body.height and body.getpixel((x, y)) > 0
+
+    if tail_style == "soft-rounded":
+        if not point_is_in_body(tail[0]) or not point_is_in_body(tail[2]) or point_is_in_body(tail[1]):
+            fail(f"{label} soft-rounded order must be [body base, exterior tip, body base]")
+    intersection = ImageChops.multiply(body, tail_mask)
+    if intersection.getbbox() is None:
+        fail(f"{label} must overlap the bubble body to form one closed silhouette")
+    durable_neck = erode_mask(intersection, erosion_radius)
+    if durable_neck.getbbox() is None:
+        fail(f"{label} attachment is too narrow to remain open after the bubble stroke")
+    if ImageChops.subtract(tail_mask, body).getbbox() is None:
+        fail(f"{label} must extend outside the bubble body")
+    exterior = ImageChops.multiply(interior, ImageChops.invert(body))
+    if exterior.getbbox() is None:
+        fail(f"{label} must retain white interior outside the body; a black plug is invalid")
+    traversable = interior.tobytes()
+    seeds = ImageChops.multiply(interior, durable_neck).tobytes()
+    targets = exterior.tobytes()
+    start = seeds.find(b"\xff")
+    if start < 0:
+        fail(f"{label} leaves no bubble-body interior after applying the stroke")
+    width, height = interior.size
+    visited = bytearray(len(traversable))
+    visited[start] = 1
+    pending: deque[int] = deque([start])
+    while pending:
+        current = pending.popleft()
+        if targets[current]:
+            return
+        x = current % width
+        neighbors = []
+        if x > 0:
+            neighbors.append(current - 1)
+        if x + 1 < width:
+            neighbors.append(current + 1)
+        if current >= width:
+            neighbors.append(current - width)
+        if current + width < width * height:
+            neighbors.append(current + width)
+        for neighbor in neighbors:
+            if traversable[neighbor] and not visited[neighbor]:
+                visited[neighbor] = 1
+                pending.append(neighbor)
+    fail(f"{label} white interior does not connect the bubble body to the exposed tail")
 
 
 def rotate_point(
@@ -1042,18 +1286,56 @@ def validate_bubbles(
         if shape == "rounded_rect" and radius * 2 > min(bbox[2] - bbox[0], bbox[3] - bbox[1]):
             fail(f"{prefix}.corner_radius is too large for bbox")
         stroke_width = require_int(bubble.get("stroke_width", 3), f"{prefix}.stroke_width", 1)
-        stroke_limit = min(64, max(1, min(bbox[2] - bbox[0], bbox[3] - bbox[1]) // 3))
+        minimum_dimension = min(bbox[2] - bbox[0], bbox[3] - bbox[1])
+        stroke_limit = min(MAX_BUBBLE_STROKE_WIDTH, max(1, (minimum_dimension - 1) // 2))
         if stroke_width > stroke_limit:
             fail(f"{prefix}.stroke_width may not exceed {stroke_limit} for this bubble")
         fill = parse_color(bubble.get("fill", "#fffdf7"), f"{prefix}.fill")
         stroke = parse_color(bubble.get("stroke", "#1f1f1d"), f"{prefix}.stroke")
-        tail_items = require_list(bubble.get("tail", []), f"{prefix}.tail")
+        tail_value = bubble.get("tail", [])
+        if isinstance(tail_value, list):
+            tail_items = require_list(tail_value, f"{prefix}.tail")
+            tail_points_label = f"{prefix}.tail"
+            tail_style = "pointed"
+            tail_tip_trim = 0
+        elif isinstance(tail_value, dict):
+            if schema_version < 2:
+                fail(f"{prefix}.tail soft-rounded object requires schema_version 2")
+            tail_object = require_mapping(tail_value, f"{prefix}.tail")
+            reject_unknown_keys(
+                tail_object,
+                frozenset({"style", "points", "tip_trim"}),
+                f"{prefix}.tail",
+            )
+            if set(tail_object) != {"style", "points", "tip_trim"}:
+                fail(f"{prefix}.tail soft-rounded object requires style, points, and tip_trim")
+            tail_style = require_string(tail_object.get("style"), f"{prefix}.tail.style")
+            if tail_style != "soft-rounded":
+                fail(f"{prefix}.tail.style must be 'soft-rounded'")
+            tail_tip_trim = require_int(tail_object.get("tip_trim"), f"{prefix}.tail.tip_trim")
+            tail_items = require_list(tail_object.get("points"), f"{prefix}.tail.points")
+            tail_points_label = f"{prefix}.tail.points"
+        else:
+            fail(f"{prefix}.tail must be an array or a soft-rounded tail object")
         if tail_items and len(tail_items) != 3:
-            fail(f"{prefix}.tail must be empty or contain exactly 3 points")
-        tail = tuple(require_point(point, f"{prefix}.tail[{point_index}]") for point_index, point in enumerate(tail_items))
+            fail(f"{tail_points_label} must be empty or contain exactly 3 points")
+        tail = tuple(
+            require_point(point, f"{tail_points_label}[{point_index}]")
+            for point_index, point in enumerate(tail_items)
+        )
         for point in tail:
             if not point_inside(point, safe_region):
-                fail(f"{prefix}.tail point {list(point)} must remain inside its approved safe_region")
+                fail(f"{tail_points_label} point {list(point)} must remain inside its approved safe_region")
+        validate_bubble_tail_topology(
+            shape,
+            bbox,
+            radius,
+            tail,
+            stroke_width,
+            tail_points_label,
+            tail_style,
+            tail_tip_trim,
+        )
 
         collision_margin = (stroke_width + 1) // 2 + 2
         bubble_visual_bbox = expand_box(bbox, collision_margin)
@@ -1158,6 +1440,8 @@ def validate_bubbles(
                 "fill": fill,
                 "stroke": stroke,
                 "tail": tail,
+                "tail_style": tail_style,
+                "tail_tip_trim": tail_tip_trim,
                 "text": text,
                 "allow_overlap_with": allow_overlap_with,
                 "_visual_bbox": bubble_visual_bbox,
@@ -1236,10 +1520,16 @@ def validate_manifest(
     reject_unknown_keys(stages, ARTIFACT_STAGE_KEYS, "artifact_stages")
     input_stage = require_string(stages.get("panel_inputs"), "artifact_stages.panel_inputs")
     composition_stage = require_string(stages.get("composition"), "artifact_stages.composition")
-    if input_stage != "unlettered-panel":
-        fail("artifact_stages.panel_inputs must be 'unlettered-panel'")
-    if composition_stage != "unlettered-page":
-        fail("artifact_stages.composition must be 'unlettered-page'")
+    stage_pair = (input_stage, composition_stage)
+    allowed_stage_pairs = {
+        ("unlettered-panel", "unlettered-page"),
+        ("page-native-unlettered", "page-native-unlettered"),
+    }
+    if stage_pair not in allowed_stage_pairs:
+        fail(
+            "artifact_stages must be either unlettered-panel -> unlettered-page "
+            "or page-native-unlettered -> page-native-unlettered"
+        )
     canvas = require_mapping(manifest.get("canvas"), "canvas")
     reject_unknown_keys(canvas, CANVAS_KEYS, "canvas")
     canvas_size = require_pair(canvas.get("size"), "canvas.size")
@@ -1261,6 +1551,30 @@ def validate_manifest(
             fail(f"panel source bytes exceed the {MAX_TOTAL_SOURCE_BYTES:,}-byte per-run limit")
         panel_list.append(panel)
     panels = tuple(panel_list)
+    if input_stage == "page-native-unlettered":
+        if len(panels) != 1:
+            fail("page-native lettering requires exactly one full-canvas source")
+        page_source = panels[0]
+        full_canvas = (0, 0, canvas_size[0], canvas_size[1])
+        if page_source.source_size != canvas_size:
+            fail("page-native lettering source size must exactly match canvas.size")
+        if page_source.source_crop != full_canvas or page_source.frame != full_canvas:
+            fail("page-native lettering source_crop and frame must cover the exact full canvas")
+        if (
+            page_source.reading_order != 1
+            or page_source.row != 1
+            or page_source.column != 1
+            or page_source.corner_radius != 0
+            or page_source.border_width != 0
+            or page_source.clip_polygon is not None
+            or page_source.rotation_degrees != 0
+            or page_source.z_index != 0
+            or page_source.allow_overlap_with
+        ):
+            fail(
+                "page-native lettering source must be one borderless, unrotated, "
+                "unclipped full-canvas panel at reading_order/row/column 1"
+            )
     validate_panel_flow(panels, schema_version)
     panel_by_id = {panel.panel_id: panel for panel in panels}
     bubbles = validate_bubbles(manifest, panel_by_id, schema_version)
@@ -1278,6 +1592,8 @@ def validate_manifest(
     reject_unknown_keys(output, OUTPUT_KEYS, "output")
     output_stage = require_string(output.get("stage"), "output.stage")
     expected_output_stage = "lettered-final" if bubbles else "unlettered-page"
+    if input_stage == "page-native-unlettered" and not bubbles:
+        fail("page-native lettering requires at least one approved bubble")
     if output_stage != expected_output_stage:
         fail(
             f"output.stage must be {expected_output_stage!r} when bubbles "
@@ -1549,22 +1865,24 @@ def render_bubbles(
     draw = ImageDraw.Draw(overlay)
     records: list[dict[str, Any]] = []
     for bubble in manifest.bubbles:
-        bbox = scale_draw_box(bubble["bbox"], OVERLAY_SCALE)
-        width = bubble["stroke_width"] * OVERLAY_SCALE
-        tail = [scale_point(point, OVERLAY_SCALE) for point in bubble["tail"]]
-        if tail:
-            draw.polygon(tail, fill=bubble["fill"])
-            draw.line(tail + [tail[0]], fill=bubble["stroke"], width=width, joint="curve")
-        if bubble["shape"] == "ellipse":
-            draw.ellipse(bbox, fill=bubble["fill"], outline=bubble["stroke"], width=width)
-        else:
-            draw.rounded_rectangle(
-                bbox,
-                radius=bubble["corner_radius"] * OVERLAY_SCALE,
-                fill=bubble["fill"],
-                outline=bubble["stroke"],
-                width=width,
-            )
+        origin, _, _, union = bubble_shape_masks(
+            bubble["shape"],
+            bubble["bbox"],
+            bubble["corner_radius"],
+            bubble["tail"],
+            bubble["stroke_width"],
+            bubble["tail_style"],
+            bubble["tail_tip_trim"],
+        )
+        eroded = erode_mask(union, bubble["stroke_width"] * OVERLAY_SCALE)
+        stroke_mask = ImageChops.subtract(union, eroded)
+        silhouette = Image.new("RGBA", union.size, (0, 0, 0, 0))
+        silhouette.paste(bubble["fill"], (0, 0), union)
+        silhouette.paste(bubble["stroke"], (0, 0), stroke_mask)
+        overlay.alpha_composite(
+            silhouette,
+            dest=(origin[0] * OVERLAY_SCALE, origin[1] * OVERLAY_SCALE),
+        )
         text_records: list[dict[str, Any]] = []
         if bubble["text"] is not None:
             assert manifest.font_bytes is not None
@@ -1587,6 +1905,8 @@ def render_bubbles(
                 "bbox": list(bubble["bbox"]),
                 "safe_region": list(bubble["safe_region"]),
                 "allow_overlap_with": list(bubble["allow_overlap_with"]),
+                "tail_style": bubble["tail_style"],
+                "tail_tip_trim": bubble["tail_tip_trim"],
                 "exact": bubble["text"]["exact"] if bubble["text"] is not None else None,
                 "codepoints": (
                     [f"U+{ord(character):04X}" for character in bubble["text"]["exact"]]
@@ -1813,7 +2133,10 @@ def run(args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Compose separately generated comic panels from a validated JSON manifest.",
+        description=(
+            "Render exact lettering onto one full page or reconstruct explicitly "
+            "accepted comic panels from a validated JSON manifest."
+        ),
     )
     parser.add_argument("--manifest", required=True, help="UTF-8 compositor manifest JSON")
     parser.add_argument("--font", help="override the first available manifest CJK font candidate")

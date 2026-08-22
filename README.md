@@ -16,7 +16,7 @@ Craft Skills 把可迁移的专业方法提炼成聚焦的工作流，并为每�
 | Skill | 用途 | 状态 |
 |---|---|---|
 | [`logo-semantic-fusion`](skills/logo-semantic-fusion/README.md) | 设计和评审让多个含义真正共享几何结构的 Logo。 [阅读中文使用指南并查看案例](docs/logo-semantic-fusion.zh-CN.md) · [Agent 工作流](skills/logo-semantic-fusion/SKILL.md) | v0.1 实验版 |
-| [`recurring-character-diary-comic`](skills/recurring-character-diary-comic/README.md) | 围绕已有且获授权的固定角色，创建、审核或局部修复 4–8 格日记漫画；锁定故事与视觉合同，按风险选择生成路线，可审计合成，并检查实际成品。 [阅读中文使用指南](docs/recurring-character-diary-comic.zh-CN.md) · [Agent 工作流](skills/recurring-character-diary-comic/SKILL.md) | v0.1 实验版 |
+| [`recurring-character-diary-comic`](skills/recurring-character-diary-comic/README.md) | 围绕已有且获授权的固定角色，默认整页原生生成 4–8 格日记漫画；比较三种页面骨架，锁定方向关系与逐字对白，并在原图和 25% 下做双轴验收。 [阅读中文使用指南](docs/recurring-character-diary-comic.zh-CN.md) · [Agent 工作流](skills/recurring-character-diary-comic/SKILL.md) | v0.2 实验版 |
 | [`native-transparent-imagegen`](skills/native-transparent-imagegen/README.md) | 原生生成透明 PNG/WebP，检查未经修改的 Alpha、细边缘和证据；RGB 棋盘格直接失败，禁止用抠图伪造成功。 [阅读中文使用指南与团子胡桃案例](docs/native-transparent-imagegen.zh-CN.md) · [Agent 工作流](skills/native-transparent-imagegen/SKILL.md) | v0.1 实验版 |
 
 ## 原生透明，不是把棋盘格画进图片

@@ -870,7 +870,7 @@ def validate_contract(contract: dict[str, Any], label: str) -> None:
         "states", "relations", "panels", "global_rules", "unknowns", "routing",
     }
     require(required <= set(contract), f"{label} missing keys: {sorted(required - set(contract))}")
-    require(contract["contract_version"] == "comic-v2", f"{label}.contract_version must be comic-v2")
+    require(contract["contract_version"] == "comic-v3", f"{label}.contract_version must be comic-v3")
     require(contract["artifact_type"] == "recurring-character-diary-comic", f"{label}.artifact_type mismatch")
 
     sources = sequence(contract["sources"], f"{label}.sources")
@@ -924,9 +924,13 @@ def validate_contract(contract: dict[str, Any], label: str) -> None:
             require(rule.get("source") in source_ids, f"{label}.global_rules[{index}].source is unresolved")
 
     routing = mapping(contract["routing"], f"{label}.routing")
-    require(routing.get("mode") in {"whole-page", "panel-by-panel", "key-panel-first"}, f"{label}.routing.mode is invalid")
-    for panel_id in sequence(routing.get("proof_panels", []), f"{label}.routing.proof_panels"):
-        require(panel_id in panel_ids, f"{label}.routing.proof_panels references unknown panel {panel_id!r}")
+    require(
+        routing.get("mode") in {"page-native", "page-native-unlettered", "panel-reconstruction"},
+        f"{label}.routing.mode is invalid",
+    )
+    for field in ("high_risk_focus_panels", "proof_panels"):
+        for panel_id in sequence(routing.get(field, []), f"{label}.routing.{field}"):
+            require(panel_id in panel_ids, f"{label}.routing.{field} references unknown panel {panel_id!r}")
 
 
 def validate_cases(path: Path) -> dict[str, Any]:
@@ -976,9 +980,9 @@ def validate_cases(path: Path) -> dict[str, Any]:
     risk_oracle = mapping(root.get("risk_oracle"), "risk_oracle")
     levels = mapping(risk_oracle.get("levels"), "risk_oracle.levels")
     expected_levels = {
-        "L1": ("low", "0-2", "whole-page"),
-        "L2": ("medium", "3-5", "panel-by-panel"),
-        "L3": ("high", "6-10", "key-panel-first"),
+        "L1": ("low", "0-2", "page-native"),
+        "L2": ("medium", "3-5", "page-native"),
+        "L3": ("high", "6-10", "page-native"),
     }
     require(set(levels) == set(expected_levels), "risk level vocabulary mismatch")
     for level_id, (label_name, score_band, generation_route) in expected_levels.items():
@@ -990,7 +994,10 @@ def validate_cases(path: Path) -> dict[str, Any]:
     nonempty_string(levels["L3"].get("classification_override"), "risk_oracle.levels.L3.classification_override")
     generation_route_map = mapping(risk_oracle.get("generation_routes"), "risk_oracle.generation_routes")
     generation_routes = set(generation_route_map)
-    require(generation_routes == {"whole-page", "panel-by-panel", "key-panel-first"}, "generation route vocabulary mismatch")
+    require(
+        generation_routes == {"page-native", "page-native-unlettered", "panel-reconstruction"},
+        "generation route vocabulary mismatch",
+    )
     for route_id, route_description in generation_route_map.items():
         nonempty_string(route_description, f"risk_oracle.generation_routes.{route_id}")
 
@@ -1140,7 +1147,10 @@ def validate_cases(path: Path) -> dict[str, Any]:
             if override is not None:
                 risk_overrides += 1
                 require(override == "decisive-s0-causal-relation", f"{label}.expected_risk_override is invalid")
-                require(risk == "L3" and expected_generation == "key-panel-first", f"{label} risk override must classify as L3 key-panel-first")
+                require(
+                    risk == "L3" and expected_generation == "page-native",
+                    f"{label} risk override must classify as L3 without decomposing the page",
+                )
                 require(
                     isinstance(raw_score, int) and not isinstance(raw_score, bool) and 0 <= raw_score <= 5,
                     f"{label} decisive-S0 override needs expected_raw_score 0..5",

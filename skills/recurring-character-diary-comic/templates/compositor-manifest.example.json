@@ -113,7 +113,11 @@
       "shape": "ellipse",
       "bbox": [704, 88, 1088, 264],
       "safe_region": [680, 70, 1110, 354],
-      "tail": [[790, 246], [744, 330], [846, 250]],
+      "tail": {
+        "style": "soft-rounded",
+        "points": [[790, 232], [744, 330], [858, 238]],
+        "tip_trim": 24
+      },
       "fill": "#fffdf7",
       "stroke": "#20201e",
       "stroke_width": 4,

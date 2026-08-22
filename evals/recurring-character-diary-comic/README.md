@@ -4,8 +4,10 @@ This directory contains the public-safe behavioral and schema tests for
 `recurring-character-diary-comic`.
 
 The exported suite covers Create, Audit, Repair, negative routing, rights
-safety, story and visual contracts, risk routing, relation evidence, layout
-feasibility, editorial-layout review, and accidental card-grid failure.
+safety, story and visual contracts, page-native routing, risk-focused relation
+evidence, three-skeleton layout selection, editorial-layout review, and
+accidental card-grid failure. Risk labels never silently authorize panel
+decomposition.
 Artifact-bound cases are intentionally marked `deferred` because the public
 package does not distribute the private raster fixtures.
 

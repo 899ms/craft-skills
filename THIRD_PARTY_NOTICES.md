@@ -27,6 +27,12 @@ fictional teaching or regression assets created for this project. They do not
 trace or reproduce marks shown in the referenced videos and do not imply that
 the fictional names are cleared for commercial use.
 
+The `recurring-character-diary-comic` cover and page-skeleton diagram under
+`assets/examples/` are generated-original or project-drawn public tutorial
+assets. They contain a fictional character and page structure only; they do not
+include a private character profile, private story, internal prompt history,
+downloaded source media, or publication authority.
+
 The `native-transparent-imagegen` case record refers to Fini Yang's original
 Tuanzi and Hutao characters and to held-out, watermarked first-version artwork
 supplied directly by the rights holder. The selected native-alpha output under

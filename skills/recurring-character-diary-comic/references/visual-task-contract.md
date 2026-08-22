@@ -210,62 +210,59 @@ Interpret scores as:
 - `3–5`: medium risk;
 - `6–10`: high risk.
 
-The score predicts generation isolation; it does not lower the acceptance gate.
-Keep this raw score unchanged. For routing and eval labels, classify a raw
-`0–5` panel as effective high risk (`L3`) when it contains the story's decisive
-`S0` causal relation; record the override reason as
-`decisive-s0-causal-relation`. Do not invent extra risk factors merely to push
-the raw score into `6–10`.
+The score predicts how much evidence must be made explicit in the whole-page
+prompt, enlarged QA, and repair decision. It does not lower the acceptance gate
+and does not automatically isolate a panel. Keep the raw score unchanged. For
+risk labels, classify a raw `0–5` panel as effective high risk (`L3`) when it
+contains the story's decisive `S0` causal relation; record the override reason
+as `decisive-s0-causal-relation`. Do not invent risk factors merely to change
+the production route.
 
 ## Generation routing
 
-Choose and lock one of these routes before art generation:
+Choose and lock one of these routes before art generation. Risk and route are
+separate fields: every risk level begins with `page-native`.
 
-### `whole-page`
+### `page-native`
 
-Allowed only when all of the following are true:
+This is the default route for every eligible 4–8 panel episode. Generate the
+entire page as one image so its panel topology, scenery, character scale,
+negative space, border interactions, palette, bubbles, and exact approved
+dialogue are solved together.
 
-- at most four panels;
-- every panel scores `0–2` and the page total is at most 6;
-- no `S0` cross-panel causal relation;
-- no directional reading object;
-- no multi-character physical interaction;
-- no threading, insertion, transfer, or similarly exact contact action.
+High-risk hands, contact, causality, directional surfaces, and cross-panel
+state changes increase prompt specificity and enlarged QA. They do not
+authorize silent decomposition.
 
-Generate art without text or bubbles. Deterministic lettering remains a later
-stage.
+Use at most two page-native art attempts before a route decision. If the first
+candidate contradicts the selected page skeleton, correct the structural
+reference or prompt for the second attempt rather than adding decorative
+diagonals or switching to independent panels.
 
-### `panel-by-panel`
+### `page-native-unlettered`
 
-Use when any panel scores `3–5`, the page has more than four panels, multiple
-characters require distinct identity/dialogue ownership, or whole-page
-eligibility fails. Generate each panel as an independent artifact and compose
-only panels marked `accepted-for-next-stage` with a deterministic layout step.
+Use only when the complete page's art direction and contract evidence pass but
+model-rendered dialogue cannot be made exact. Generate one complete page again
+without text or bubbles while preserving the selected rhythm and intentional
+dialogue space. Use the full canvas as one borderless compositor source and
+render only approved bubbles and text. Do not cut the page into narrative
+panels.
 
-Each panel call receives only:
+### `panel-reconstruction`
 
-- that panel's beat, cast, states, relations, and negative evidence;
-- applicable character invariants and references;
-- the immediately preceding state and required next state;
-- medium direction and framing preference;
-- the no-text/no-mark rule.
+This is a disclosed fallback, not a risk class. It is allowed only when:
 
-Do not paste the entire page contract into every panel prompt.
+- two page-native attempts fail the same named `S0` or `S1` field;
+- one constrained local edit cannot isolate that defect;
+- the user explicitly accepts the loss of whole-page coherence.
 
-### `key-panel-first`
+Freeze the fallback's canvas, reading order, sources, crops, frames, safe
+regions, and protected regions. Generate the hardest proof panel first, then
+the remaining panels. Reconstruct and re-audit the page under a new artifact
+stage. The fallback cannot inherit a page-native editorial-layout pass.
 
-This is a specialization of `panel-by-panel`. Use it when any panel scores
-`6–10` or contains the story's decisive `S0` causal relation. Generate and
-inspect the highest-risk proof panel first. If the proof panel exhausts its
-budget, stop the run before spending calls on ordinary setup panels.
-
-The following always force at least `panel-by-panel`, regardless of the numeric
-score:
-
-- `passes_through` or `inserted_into` as an `S0` relation;
-- a directional surface whose current reader/operator matters;
-- an `S0` relation whose result must become another panel's state;
-- physical contact between two characters.
+If reconstruction would destroy the intended page language, stop and report
+the blocker instead of delivering a technically compliant collage.
 
 ## Artifact stages and evidence ledger
 
@@ -273,11 +270,11 @@ Keep the locked contract immutable. Record produced files and review results in
 a separate `ComicRunRecord`:
 
 ```yaml
-run_version: comic-run-v2
+run_version: comic-run-v3
 run_id: "<unique id>"
 contract_ref: "<path or artifact id>"
 contract_sha256: "<hash of locked contract>"
-route: key-panel-first
+route: page-native
 art_generations_used: 0
 task_lineage_id: "<stable story-task id>"
 parent_run_ids: []
@@ -291,109 +288,98 @@ outcome: in-progress
 cumulative across layout-driven successor runs and is the value checked against
 the approved stochastic budget.
 
-Each artifact ledger entry contains:
+For a page-native run, an artifact ledger entry contains:
 
 ```yaml
-- artifact_id: panel-p3-v1
-  stage: unlettered-panel
-  path: "<artifact path>"
+- artifact_id: page-native-v1
+  stage: page-native-final
+  path: "<final page path>"
   sha256: "<file hash>"
   dimensions: [1536, 1024]
-  derived_from: [lead-reference-v2]
+  derived_from: [lead-reference-v2, selected-page-skeleton]
   attempt: 1
-  status: accepted-for-next-stage
+  status: inspected
   inspected_at_original_resolution: true
-  composition_binding:
-    source_crop: [80, 60, 1456, 960]
-    target_frame: [40, 600, 1160, 1120]
-    evidence_check: pass
-    manifest_ref: null
-    manifest_sha256: null
+  page_structure_binding:
+    selected_strategy: mother-panel-with-reaction-inset
+    reviewed_at_25_percent: true
   checks:
-    - {check_id: relation-towel-drags-mug, result: pass}
+    - {check_id: relation-towel-drags-mug, result: pass, locator: "p3 center-right"}
+    - {check_id: editorial-layout, result: pass, locator: "whole page"}
   unresolved: []
 ```
 
-An `unlettered-panel` marked `accepted-for-next-stage` must carry a
-`composition_binding` containing the inspected source crop, target frame, and
-evidence result. When the compositor manifest is locked, fill its reference and
-hash. Changing the crop, frame, source dimensions, or manifest binding returns
-the panel to `inspected` until the cropped artifact is checked again; it cannot
-inherit the earlier next-stage acceptance.
+Only a `panel-reconstruction` fallback uses independent `unlettered-panel`
+entries and `composition_binding` fields. A page-native run must not manufacture
+panel sources or crop bindings after the fact.
 
 Use these run checkpoints in order:
 
 1. `story-locked` — semantic beats, cast, states, and exact dialogue fixed;
-2. `layout-preflight` — canvas and reading order fixed; draft frames, evidence
-   reservations, safe regions, and protected regions jointly pass feasibility;
+2. `page-skeleton-selection` — three structurally different candidates reviewed
+   at working size and 25%; one story-matched strategy selected;
 3. `contract-locked` — all sources resolve; no open `S0`/`S1` unknown; route,
    budget, and the preflighted render contract are frozen;
 4. `identity-reference` — required identity/mark references inspected and
    accepted for generation;
-5. `proof-panel-art` — high-risk `unlettered-panel` artifacts generated and inspected when routed;
-6. `panel-art` or `whole-page-art` — `unlettered-panel` or `unlettered-page` candidates generated and inspected;
-7. `page-composite` — panels marked `accepted-for-next-stage` arranged into an `unlettered-page` deterministically;
-8. `art-inspection` — full unlettered page checked at original resolution;
-9. `deterministic-lettering` — bubbles and exact approved strings rendered into a `lettered-final` artifact;
+5. `page-native-art` — one complete page candidate generated and inspected;
+6. `local-repair` — optional one-region repair with off-target pixel comparison;
+7. `page-native-unlettered` — optional complete-page text fallback;
+8. `deterministic-lettering` — optional bubbles and exact strings rendered without reconstructing panels;
+9. `panel-reconstruction` — optional disclosed fallback with independent panel artifacts and deterministic assembly;
 10. `final-inspection` — lettering, ownership, reading order, occlusion, and all
    earlier `S0`/`S1` checks rechecked on the final pixels;
 11. `accepted`, `rejected`, or `not-verified` — terminal run outcome.
 
 An artifact status is one of `generated`, `inspected`, `accepted-for-next-stage`,
-`rejected`, or `not-verified`. `accepted-for-next-stage` is not final page
-acceptance. A generated file cannot jump directly to `accepted-for-next-stage`,
-and a run cannot become `accepted` before final inspection.
+`rejected`, or `not-verified`. `accepted-for-next-stage` applies only to a
+non-final lettering or reconstruction input; it is not final page acceptance.
+A generated file cannot jump directly to `accepted-for-next-stage`, and a run
+cannot become `accepted` before final inspection.
 
-Each artifact's `stage` is one of `identity-reference`, `unlettered-panel`,
-`unlettered-page`, `lettered-final`, or `repair-candidate`. Run checkpoints and
-artifact stages are separate: for example, the `proof-panel-art` checkpoint
-produces and inspects an `unlettered-panel` artifact.
+Each artifact's `stage` is one of `identity-reference`, `page-native-final`,
+`page-native-unlettered`, `unlettered-panel`, `reconstructed-page`,
+`lettered-final`, or `repair-candidate`. Run checkpoints and artifact stages
+are separate.
 
 Record artifact paths, hashes, dimensions, parent artifacts, and original-
 resolution inspection state. Retain rejected attempts; do not overwrite them
 with later candidates.
 
-## Layout feasibility and freeze point
+## Page-structure feasibility and freeze point
 
-Treat layout as an evidence container, not only a visual arrangement.
+Treat page structure as a story decision, not a packing problem.
 
-Before stochastic generation, reserve the target frame for all required content:
+Before stochastic generation, compare three page-skeleton candidates. For each
+candidate, project every `S0`/`S1` state, identity cue, contact point,
+directional surface, speaker, exact string, and final reveal into its intended
+reading territory. Review the complete silhouette at working size and exactly
+25%. Reject a structure that hides evidence, creates ambiguous reading order,
+flattens every beat into the same container, or leaves non-narrative dead space.
 
-- project the expected bounds of every S0/S1 state, identity cue, contact point,
-  directional surface, and speaker anchor into the target frame;
-- reserve bubble safe regions and expand protected action regions by the planned
-  stroke, collision margin, and resampling halo;
-- reject or revise the S2 camera, crop plan, or panel proportion when no crop at
-  the target aspect ratio can contain all required evidence and lettering at
-  once.
+Freeze the selected strategy, relative beat hierarchy, reading path, dialogue
+intent, protected story evidence, and any justified border interaction. Exact
+pixel frames and crops are not required for `page-native`; they become hard
+reproducibility inputs only if `page-native-unlettered` needs deterministic
+lettering geometry or an explicitly accepted `panel-reconstruction` fallback
+needs independent panel sources.
 
-After a source panel passes at original resolution, choose the exact source crop
-and repeat the check on actual pixels. A full-source pass never authorizes a crop
-that removes required identity, anatomy, contact, state, or dialogue ownership
-evidence.
+For reconstruction, a source panel pass never authorizes a crop that removes
+identity, anatomy, contact, state, or dialogue-ownership evidence. Once the
+manifest records source hashes, dimensions, crops, frames, safe regions, and
+protected regions, changing any of them creates a new artifact and requires
+fresh unlettered and final inspection.
 
-An expected crop remains an S2 plan until the compositor manifest records the
-accepted source hash, decoded dimensions, exact crop, target frame, safe regions,
-and protected regions. Once that manifest is locked, those values are hard
-reproducibility inputs. Changing any of them produces a new manifest and page
-artifact and requires fresh unlettered and final inspection.
-
-If original-resolution candidates pass but the planned frame repeatedly fails
-this feasibility check, preserve the failed run and begin a new run with revised
-S2 layout. Record the parent run and carry forward the task lineage's cumulative
-`art_generations_used` and remaining stochastic budget; changing the run ID must
-not reset either value. Pure deterministic layout changes and reuse of frozen
-sources consume no stochastic calls. Any increase beyond the already approved
-task-lineage budget requires explicit approval. Do not consume additional
-stochastic attempts on a geometrically impossible crop.
+Every successor run records its parent and carries forward the task lineage's
+cumulative stochastic count. Changing a run ID never resets the budget.
 
 ## Bounded attempts
 
 Lock the stochastic budget with the contract. Recommended defaults are:
 
 - at most 2 identity-reference attempts per required character;
-- at most 2 whole-page art attempts when using `whole-page`;
-- at most 2 art attempts per panel when using a panel route;
+- at most 2 page-native art attempts before a route decision;
+- at most 2 art attempts per panel only after an explicitly accepted `panel-reconstruction` fallback;
 - at most 1 localized repair per artifact and named defect, only when the edit
   tool can constrain the target region;
 - at most 10 stochastic art generations for one 4–8 panel task lineage,
@@ -408,7 +394,7 @@ Apply these stop rules:
 
 1. Reject a local repair immediately if it changes pixels outside the allowed
    region; return to the saved baseline.
-2. Stop the run when a required proof panel exhausts its budget.
+2. Stop the reconstruction fallback when a required proof panel exhausts its budget.
 3. Stop when the page-wide budget is exhausted, even if unused panel budgets
    remain.
 4. Never weaken `S0`/`S1`, change evidence wording, or reclassify a failed rule
@@ -424,7 +410,8 @@ A run is `accepted` only when:
 
 - all `S0` and `S1` checks pass on the final original-resolution artifact;
 - no blocking unknown or unresolved issue remains;
-- deterministic lettering matches every locked string and speaker;
+- every final rendered string and speaker matches the locked dialogue, whether
+  rendered page-natively or by deterministic fallback;
 - the final artifact hash is the hash that was actually reviewed;
 - no local repair introduced off-target drift.
 
@@ -438,16 +425,16 @@ checks.
 ```text
 authorized sources
   -> lock semantic story, cast, states, and exact dialogue
-  -> draft canvas, frames, crop/evidence reservations, and text-safe regions
-  -> pass whole-page layout-feasibility preflight
+  -> draft three structurally different page skeletons
+  -> compare them at working size and 25%; select one story-matched strategy
   -> lock the visual contract
-  -> score panels and freeze route/budget
-  -> generate highest-risk proof panel when required
-  -> generate and accept art units
-  -> deterministic page composition
-  -> original-resolution art inspection
-  -> deterministic bubbles and lettering
-  -> final original-resolution inspection
+  -> score risk for prompt and QA focus; freeze route/budget
+  -> generate one complete page
+  -> inspect the exact artifact at original resolution and 25%
+  -> apply at most one bounded local repair when isolatable
+  -> use full-page deterministic lettering only when text alone fails
+  -> use disclosed panel reconstruction only after its fallback gate
+  -> re-run contract and editorial inspection on the final hash
   -> accepted / rejected / not-verified
 ```
 
