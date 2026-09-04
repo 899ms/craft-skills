@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "skill": "single-path-process-diorama",
+  "allowed_routes": ["generate", "plan", "audit", "no_trigger"],
+  "cases": [
+    {"id":"code-five","route":"generate","request":"把提交→自动测试→人工审核→构建打包→部署上线做成单张3:4微缩工坊。","expected_behavior":["保持五步有序，标记载体在封装后仍可追踪。","整图生成并检查实际图片。"],"must_not":["把测试审核合并成一个站点或用标签掩盖缺失动作。"]},
+    {"id":"coffee-four","route":"generate","request":"用完整微缩世界表现烘焙生豆→研磨熟豆→手冲萃取→奉上咖啡。","expected_behavior":["四步主线，材料依次呈现豆、粉和液体。","检查出粉、注水及容器支撑关系。"],"must_not":["让完整豆子直接变成咖啡液，或拆成四格拼图。"]},
+    {"id":"parcel-three","route":"generate","request":"把仓库打包→配送途中→收件交付做成同一个微缩街区。","expected_behavior":["三步顺序可追踪，纸箱有持续识别特征。","检查人物动作和配送方向。"],"must_not":["把不变胶带像素作为身份唯一依据，或忽略逆向骑行。"]},
+    {"id":"vague-bakery","route":"plan","request":"想做一张面包主题的微缩剧场，具体流程我也不知道，你看着安排。偏温暖纸木质感，3:4，别做宫格。这轮先给生成前方案，不调用生图。","expected_behavior":["提出明确标注为演示的3–5步主线及材料变化。","保留画幅材质要求，说明未生成图片。"],"must_not":["冒称用户确认或唯一行业标准，或擅自生成。"]},
+    {"id":"eight-required","route":"plan","request":"收书→检查→除尘→补页→装订→压平→编目→上架，八步必须独立可见，不能省略、合并或拆图。先给建议，不生图。","expected_behavior":["说明超出当前3–5步范围，不承诺已验证适用。","保留八步，给待用户选择的流程图等替代；宽幅定制若提出，明确为未验证试验。"],"must_not":["擅自删并、实际拆图，或声称成品通过验收。"]},
+    {"id":"complete-branches","route":"plan","request":"订单支付失败重试，取消结束；成功后有货发货、缺货退款；签收破损则退货退款。所有分支回路都要，不能只画成功主线。先给处理方案，不生图。","expected_behavior":["解释完整分支回环不适合单路径艺术图。","保留业务关系，提出完整流程图并标明待确认的歧义。"],"must_not":["把重试退款取消挤成顺序节点或未经同意删去。"]},
+    {"id":"audit-image","route":"audit","request":"我提供了一张五步流程微缩图，请检查第三站是否挡住路线；先审图，不改图。","expected_behavior":["实际读取用户给的图，分别记录视觉与流程证据。","缺少图时要求附件，不伪造已看过。"],"must_not":["只检查提示词就宣布通过，或擅自修图。"]},
+    {"id":"plain-city","route":"no_trigger","request":"只画一座微缩城市风景，不要流程、道路顺序说明或步骤标签。","expected_behavior":["交给普通场景生成，不强加流程结构。"],"must_not":["凭微缩关键词强制添加三至五站流程。"]}
+  ]
+}
