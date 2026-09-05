@@ -19,6 +19,28 @@ Created and curated by [Fini Yang](https://github.com/finiking). Maintained by
 | [`logo-semantic-fusion`](skills/logo-semantic-fusion/README.en.md) | Design and evaluate marks in which multiple meanings genuinely share geometry. [Read the guide](docs/logo-semantic-fusion.md) · [Agent workflow](skills/logo-semantic-fusion/SKILL.md) | v0.1 experimental |
 | [`recurring-character-diary-comic`](skills/recurring-character-diary-comic/README.en.md) | Create, audit, and repair 4–8 panel page-native diary comics around an authorized recurring character; compare three page structures, lock directional evidence and exact dialogue, and review the final hash at original size and 25%. [Read the guide](docs/recurring-character-diary-comic.md) · [Agent workflow](skills/recurring-character-diary-comic/SKILL.md) | v0.2 experimental |
 | [`native-transparent-imagegen`](skills/native-transparent-imagegen/README.en.md) | Generate native-transparent PNG/WebP assets and verify untouched alpha, fine edges, and evidence. RGB checkerboards fail, and background removal cannot manufacture success. [Read the guide and Tuanzi/Hutao case](docs/native-transparent-imagegen.md) · [Agent workflow](skills/native-transparent-imagegen/SKILL.md) | v0.1 experimental |
+| [`single-path-process-diorama`](skills/single-path-process-diorama/README.en.md) | Turn a 3–5-step process into one complete miniature world, preserving sequence and meaningful state changes. [Guide](docs/single-path-process-diorama.md) · [Agent workflow](skills/single-path-process-diorama/SKILL.md) | v0.1.1-rc.1 experimental candidate |
+
+## Turn a process into a miniature world
+
+[![Miniature process-world image Skill](skills/single-path-process-diorama/assets/examples/cover.png)](skills/single-path-process-diorama/README.en.md)
+
+One process becomes one integrated scene, not a collage of separately generated stages.
+Materials, actions, and spatial rhythm follow the subject rather than a fixed track template.
+
+- [Coffee, four steps](skills/single-path-process-diorama/assets/examples/coffee.png): green beans to roasted beans, grounds, and a served drink.
+- [Code delivery, five steps](skills/single-path-process-diorama/assets/examples/code.png): marked modules connect submission, testing, review, packaging, and deployment.
+- [Parcel delivery, three steps](skills/single-path-process-diorama/assets/examples/parcel.png): packing, transport, and handoff in one neighborhood.
+
+```text
+Use $single-path-process-diorama to turn “topic → draft → edit → publish” into
+one 3:4 paper-and-wood miniature newsroom. Preserve manuscript identity, avoid panels,
+and inspect the final sequence, actions, and lettering.
+```
+
+Requires image generation and visual inspection; only built-in imagegen was tested.
+Not an engineering drawing or complete branching flowchart. Three paired image cases yielded
+two wins and a tie, not a stable success rate. The cover is not a fourth validated case.
 
 ## Native transparency, not a drawn checkerboard
 
@@ -71,6 +93,16 @@ cp -R craft-skills/skills/native-transparent-imagegen \
   "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
+For the diorama, clone the collection and install into a previously absent destination:
+
+```sh
+git clone https://github.com/ZSeven-W/craft-skills.git craft-skills-diorama
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -R craft-skills-diorama/skills/single-path-process-diorama "${CODEX_HOME:-$HOME/.codex}/skills/"
+```
+
+Back up an existing installation to avoid nested copies or overwritten customizations.
+These instructions do not install anything automatically.
 Restart or reload the agent session if the skill is not discovered immediately.
 
 ## Release standard

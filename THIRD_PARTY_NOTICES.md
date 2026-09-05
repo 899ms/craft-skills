@@ -1,5 +1,16 @@
 # Third-party notices
 
+## Process-diorama examples
+
+The four PNGs under `skills/single-path-process-diorama/assets/examples/` are original
+AI-generated project illustrations, not downloaded source media, private character profiles,
+or evidence from a real production system. Code, coffee, and parcel images are three inspected
+fictional teaching cases. The cover is a separate conceptual illustration, not a fourth tested process.
+Their untouched bytes, dimensions, and hashes are explicitly approved by the release checker.
+They are licensed under Apache-2.0 only to the extent of the project's licensable rights;
+no third-party trademark rights, exclusivity, or model-service entitlement is granted.
+
+
 ## Methodology references
 
 The workflow in this project was informed in part by a study of six publicly

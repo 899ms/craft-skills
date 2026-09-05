@@ -53,6 +53,18 @@ BANNED_MEDIA_PATH_PARTS = {
     "video-frames",
 }
 APPROVED_ASSETS = {
+    Path("skills/single-path-process-diorama/assets/examples/code.png"): (
+        "0020ea2a6a19c210191a78d434ca08485fde3f180319423842e16c2496e2f721", 2397885, (1086, 1448),
+    ),
+    Path("skills/single-path-process-diorama/assets/examples/coffee.png"): (
+        "c5f77506ed778c793c27fd237a0d31a7231c16a1e3ad48426d70b8759c4291e0", 2704790, (1086, 1448),
+    ),
+    Path("skills/single-path-process-diorama/assets/examples/parcel.png"): (
+        "67208b873e10152b0fa4015300925c7689f05e41b882806d14b115ac0788de86", 2709910, (1086, 1448),
+    ),
+    Path("skills/single-path-process-diorama/assets/examples/cover.png"): (
+        "367b96340d980ace7220a0ec8f18d56ff3238c0d1a5cb78bbf040c53ea4ad2f4", 2205976, (1983, 793),
+    ),
     Path("assets/examples/handoff/handoff-qa-board.png"): (
         "0741664632f5dcb8e39a540c3e48b13d0934e6fb7abed4f2ae408c8fc116823e",
         92196,
@@ -174,6 +186,10 @@ APPROVED_ASSETS = {
     ),
 }
 GENERATED_MEDIA_ASSETS = {
+    Path("skills/single-path-process-diorama/assets/examples/code.png"),
+    Path("skills/single-path-process-diorama/assets/examples/coffee.png"),
+    Path("skills/single-path-process-diorama/assets/examples/parcel.png"),
+    Path("skills/single-path-process-diorama/assets/examples/cover.png"),
     Path(
         "skills/native-transparent-imagegen/assets/"
         "tuanzi-hutao-native-alpha-example.png"

@@ -18,6 +18,26 @@ Craft Skills 把可迁移的专业方法提炼成聚焦的工作流，并为每�
 | [`logo-semantic-fusion`](skills/logo-semantic-fusion/README.md) | 设计和评审让多个含义真正共享几何结构的 Logo。 [阅读中文使用指南并查看案例](docs/logo-semantic-fusion.zh-CN.md) · [Agent 工作流](skills/logo-semantic-fusion/SKILL.md) | v0.1 实验版 |
 | [`recurring-character-diary-comic`](skills/recurring-character-diary-comic/README.md) | 围绕已有且获授权的固定角色，默认整页原生生成 4–8 格日记漫画；比较三种页面骨架，锁定方向关系与逐字对白，并在原图和 25% 下做双轴验收。 [阅读中文使用指南](docs/recurring-character-diary-comic.zh-CN.md) · [Agent 工作流](skills/recurring-character-diary-comic/SKILL.md) | v0.2 实验版 |
 | [`native-transparent-imagegen`](skills/native-transparent-imagegen/README.md) | 原生生成透明 PNG/WebP，检查未经修改的 Alpha、细边缘和证据；RGB 棋盘格直接失败，禁止用抠图伪造成功。 [阅读中文使用指南与团子胡桃案例](docs/native-transparent-imagegen.zh-CN.md) · [Agent 工作流](skills/native-transparent-imagegen/SKILL.md) | v0.1 实验版 |
+| [`single-path-process-diorama`](skills/single-path-process-diorama/README.md) | 把 3–5 步主线变成单张完整微缩世界，检查顺序、载体变化与阅读路径，不拆节点拼图。[中文指南](docs/single-path-process-diorama.zh-CN.md) · [Agent 工作流](skills/single-path-process-diorama/SKILL.md) | v0.1.1-rc.1 实验候选版 |
+
+## 把流程变成一座微缩世界
+
+[![微缩剧场生图 Skill 封面](skills/single-path-process-diorama/assets/examples/cover.png)](skills/single-path-process-diorama/README.md)
+
+输入一段流程，得到一张可以沿着观看的微缩场景。材质、动作和空间跟着题材走，
+不固定一套轨道或画风，也不把多个独立节点拼成宫格。
+
+- [咖啡制作：4 步](skills/single-path-process-diorama/assets/examples/coffee.png)：生豆、熟豆、粉末到一杯咖啡。
+- [代码上线：5 步](skills/single-path-process-diorama/assets/examples/code.png)：标记模块贯穿提交、测试、审核、打包与部署。
+- [包裹配送：3 步](skills/single-path-process-diorama/assets/examples/parcel.png)：街道连接打包、运输和交接。
+
+```text
+使用 $single-path-process-diorama，把“选题 → 草稿 → 校对 → 发布”做成
+一张 3:4 的纸木微缩编辑部。保持稿件身份，不要宫格；生成后检查顺序、动作和文字。
+```
+
+需要实际生图和看图能力，本轮仅实测内置 imagegen。它不代替精确工程图或完整分支流程。
+三题成图比较为两胜一平，小样本不代表稳定成功率；封面是概念图，不是第四个验证案例。
 
 ## 原生透明，不是把棋盘格画进图片
 
@@ -66,6 +86,15 @@ cp -R craft-skills/skills/native-transparent-imagegen \
   "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
+微缩剧场首次安装（已有同名目录先备份，避免嵌套复制）：
+
+```sh
+git clone https://github.com/ZSeven-W/craft-skills.git craft-skills-diorama
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -R craft-skills-diorama/skills/single-path-process-diorama "${CODEX_HOME:-$HOME/.codex}/skills/"
+```
+
+上述命令是说明，不会自动修改你的配置。
 如果安装后没有立即发现 Skill，请重启或重新加载 Agent 会话。
 
 ## 发布标准
