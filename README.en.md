@@ -93,16 +93,16 @@ cp -R craft-skills/skills/native-transparent-imagegen \
   "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
-For the diorama candidate, clone its actual branch and install into a previously absent destination:
+For the diorama, clone the collection and install into a previously absent destination:
 
 ```sh
-git clone --branch agent/add-process-diorama https://github.com/ZSeven-W/craft-skills.git craft-skills-diorama
+git clone https://github.com/ZSeven-W/craft-skills.git craft-skills-diorama
 mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
 cp -R craft-skills-diorama/skills/single-path-process-diorama "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
-Back up an existing installation to avoid nested copies or overwritten customizations. After merging,
-the default branch can be used. These instructions do not install anything automatically.
+Back up an existing installation to avoid nested copies or overwritten customizations.
+These instructions do not install anything automatically.
 Restart or reload the agent session if the skill is not discovered immediately.
 
 ## Release standard

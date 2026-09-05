@@ -2,7 +2,7 @@
 
 [简体中文](README.md) | [English](README.en.md)
 
-**v0.1.1-rc.1 · 实验候选版。** 三题材图片沿用 v0.1.0 已审查成果；本版补充输入预检、能力说明与许可，不宣称图片质量已因此提升。候选分支可试用，不表示已合并主分支或稳定发布。
+**v0.1.1-rc.1 · 实验候选版。** 三题材图片沿用 v0.1.0 已审查成果；本版补充输入预检、能力说明与许可，不宣称图片质量已因此提升。可从仓库主分支试用，尚非稳定版。
 
 输入一个 3–5 步线性流程，得到一张完整的微缩世界：观看者沿着路、轨道或连续的操作空间，看到物体如何经过不同动作、变成最终产物。不是宫格漫画，也不是把普通流程图套上 3D 外观。
 
@@ -57,15 +57,15 @@
 
 可以直接把目录交给助手，要求它读取 `SKILL.md` 后执行上面的任务；这不等于自动安装。
 
-候选分支首次安装（目标同名目录应不存在；已有安装先备份）：
+首次安装（目标同名目录应不存在；已有安装先备份）：
 
 ```sh
-git clone --branch agent/add-process-diorama https://github.com/ZSeven-W/craft-skills.git craft-skills-diorama
+git clone https://github.com/ZSeven-W/craft-skills.git craft-skills-diorama
 mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
 cp -R craft-skills-diorama/skills/single-path-process-diorama "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
-主分支合并后可使用默认分支。更换模型后应重新验证，本文不承诺所有环境自动可用。
+更换模型后应重新验证，本文不承诺所有环境自动可用。
 
 超过五步或包含分支时，它会先处理范围：允许概括则保留映射、合并相邻步骤；要求完整逻辑则建议流程图或等待你选择拆分方式，不偷偷删步骤。
 

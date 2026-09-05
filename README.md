@@ -86,15 +86,15 @@ cp -R craft-skills/skills/native-transparent-imagegen \
   "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
-微缩剧场候选版请克隆其实际分支，然后首次安装（已有同名目录先备份，避免嵌套复制）：
+微缩剧场首次安装（已有同名目录先备份，避免嵌套复制）：
 
 ```sh
-git clone --branch agent/add-process-diorama https://github.com/ZSeven-W/craft-skills.git craft-skills-diorama
+git clone https://github.com/ZSeven-W/craft-skills.git craft-skills-diorama
 mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
 cp -R craft-skills-diorama/skills/single-path-process-diorama "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
-主分支合并后可使用默认分支。上述命令是说明，不会自动修改你的配置。
+上述命令是说明，不会自动修改你的配置。
 如果安装后没有立即发现 Skill，请重启或重新加载 Agent 会话。
 
 ## 发布标准

@@ -41,12 +41,12 @@ This prompt is a suggested input, not a fourth completed example. More than five
 For first installation into a destination that does not already exist:
 
 ```sh
-git clone --branch agent/add-process-diorama https://github.com/ZSeven-W/craft-skills.git craft-skills-diorama
+git clone https://github.com/ZSeven-W/craft-skills.git craft-skills-diorama
 mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
 cp -R craft-skills-diorama/skills/single-path-process-diorama "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
-Back up an existing installation first. The default branch can be used after merging. Alternatively, provide this directory to an assistant and ask it to read SKILL.md without installing it.
+Back up an existing installation first. The default branch includes this experimental candidate. Alternatively, provide this directory to an assistant and ask it to read SKILL.md without installing it.
 
 ## Requirements and delivery
 
