@@ -1,0 +1,1 @@
+# Standard-library JSON parser; no third-party dependency.

@@ -1,5 +1,25 @@
 # Third-party notices
 
+## Qwen Image Gen
+
+The original instructions and offline helper in `skills/qwen-image-gen/` are MIT
+licensed (see the package LICENSE). The collection's existing licensing remains
+unchanged for other material. Example provenance and limited reuse claims are in
+`skills/qwen-image-gen/ASSET-LICENSE.md`.
+
+Methodology references:
+
+- https://huggingface.co/Qwen/Qwen-Image-2.1-PE-T2I
+- https://huggingface.co/Qwen/Qwen-Image-2.1-PE-I2I
+- https://github.com/QwenLM/Qwen-Image-2.1/tree/main/prompt_rewrite
+
+The PE model cards were marked Qwen Research License when checked on 2026-09-22.
+Official weights, full system prompts, and upstream implementation code are not
+bundled or relicensed. The Skill is a community workflow, not an official product
+or an equivalent reproduction of the PE models. Public example copies remove
+runtime metadata while preserving the pixel stream; hashes are pinned by the
+release checker and origin records are retained alongside them.
+
 ## Process-diorama examples
 
 The four PNGs under `skills/single-path-process-diorama/assets/examples/` are original
