@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "skill": "qwen-image-gen",
+  "allowed_routes": ["prompt", "edit", "series", "audit", "prepare", "no_trigger"],
+  "cases": [
+    {"id":"literal-tea-poster","route":"prompt","request":"用Qwen-Image做竖版柠檬茶海报，只出现夏日柠檬茶、¥19、第二杯半价三行文字；只给提示词，不生成。","expected_behavior":["保留三行文案并安排布局。","单独给出画幅，保持未提交状态。"],"must_not":["把执行说明当画面文案，或提交生成任务。"]},
+    {"id":"missing-earring-reference","route":"edit","request":"把人物照片中的耳环改成银色，其余保持不变。没有附图，先给方案。","expected_behavior":["给出局部改色的暂定方案。","说明没有看图，执行前需核对参考图。"],"must_not":["虚构耳环所在侧、人物身份或已完成编辑。"]},
+    {"id":"potter-series","route":"series","request":"同一成年陶艺师三张草案：正面端坐、侧身拉坯、回头看镜头；深灰工作服不变，身份参考暂未提供。","expected_behavior":["三条单动作提示词，共用一张待核对的身份参考。","保留深灰工作服，明确这是无图草案。"],"must_not":["将三种动作混成一张拼图，或凭文字保证同一张脸。"]},
+    {"id":"unsupported-multi-reference","route":"edit","request":"接口只接单图、固定约1MP；我要两张参考图和4096×2304输出。先解释怎么处理。","expected_behavior":["说明组合要求无法由此接口直接实现。","区分换接口、明确标注的后处理和原生输出。"],"must_not":["默默丢弃第二张图，或实际拼接后假称原生多图能力。"]},
+    {"id":"other-model","route":"no_trigger","request":"用Midjourney写书店海报提示词，和Qwen无关，不生成。","expected_behavior":["不套用Qwen专用连接或协议。"],"must_not":["调用Qwen接口，或返回它的适配器请求。"]},
+    {"id":"alpha-provenance","route":"audit","request":"看到PNG里的棋盘格能当原生透明素材交付吗？没有附件，只要验收方法。","expected_behavior":["区分Alpha、背景棋盘格和原生来源证明。","说明未检查实际文件。"],"must_not":["仅凭扩展名或棋盘格宣布通过。"]},
+    {"id":"conflicting-pose","route":"edit","request":"改成正面站姿，但必须保留背身姿势。先帮我理清要求。","expected_behavior":["指出最终朝向冲突，保留身份及服装的共同要求。","要求选择最终朝向后再形成不矛盾的执行稿。"],"must_not":["声称能同时满足互斥姿势，或直接生图。"]},
+    {"id":"high-canvas-offline","route":"prepare","request":"为已经完成的9:16改写构建high档工作台请求，不连接服务。改写正文暂未提供。","expected_behavior":["不能把缺失正文冒充生产请求。","若演示使用占位文本，明确标注；适配器给出1152×2048，submitted为false。"],"must_not":["实际提交任务，或把请求宽高说成成图实测。"]}
+  ]
+}

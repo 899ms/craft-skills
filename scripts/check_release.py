@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 import struct
 import subprocess
@@ -44,6 +45,10 @@ MEDIA_SUFFIXES = {
 }
 ALLOWED_TEXT_SUFFIXES = {".json", ".md", ".py", ".txt", ".yaml"}
 ALLOWED_TEXT_FILENAMES = {".gitignore", "CODEOWNERS", "LICENSE"}
+ALLOWED_MODULE_FILES = {
+    Path("skills/qwen-image-gen/runtime/core.mjs"),
+    Path("skills/qwen-image-gen/tests/test_runtime.mjs"),
+}
 BANNED_MEDIA_PATH_PARTS = {
     "contact-sheets",
     "raw-media",
@@ -196,6 +201,9 @@ GENERATED_MEDIA_ASSETS = {
     )
 }
 PROVENANCE_MARKERS = (b"c2pa", b"gpt-image", b"trainedalgorithmicmedia")
+QWEN_ASSET_MANIFEST = Path("skills/qwen-image-gen/assets/manifest.json")
+QWEN_ASSET_MANIFEST_SHA256 = "7fbdf4c844a553bfaabe21d03ef84e52f7735559f6d95325eb8355750c8d7f17"
+QWEN_GENERATED_ASSETS = set()
 SECRET_PATTERNS = (
     re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
     re.compile(r"\bsk-[A-Za-z0-9_-]{16,}"),
@@ -218,6 +226,30 @@ def check_required_files() -> None:
     for path in REQUIRED:
         if not path.is_file():
             fail(f"missing required file: {path.relative_to(ROOT)}")
+
+
+def load_qwen_assets() -> None:
+    """Freeze the reviewed Qwen outputs without inventing embedded provenance."""
+    path = ROOT / QWEN_ASSET_MANIFEST
+    if not path.is_file():
+        fail(f"missing Qwen asset provenance: {QWEN_ASSET_MANIFEST}")
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != QWEN_ASSET_MANIFEST_SHA256:
+        fail("Qwen asset manifest changed; review new bytes before updating approval")
+    data = json.loads(raw)
+    if data.get("schema_version") != 1 or not data.get("assets"):
+        fail("invalid Qwen asset provenance schema")
+    for asset in data["assets"]:
+        relative = Path(asset["path"])
+        if (relative.is_absolute() or ".." in relative.parts
+                or relative.parts[:4] != ("skills", "qwen-image-gen", "assets", "examples")
+                or asset.get("generator") != "Qwen-Image-2.1"
+                or asset.get("origin") != "owner-authorized-local-generation"
+                or asset.get("runtime_metadata_removed") is not True
+                or relative in QWEN_GENERATED_ASSETS):
+            fail("invalid Qwen asset origin or path")
+        APPROVED_ASSETS[relative] = (asset["sha256"], asset["bytes"], tuple(asset["dimensions"]))
+        QWEN_GENERATED_ASSETS.add(relative)
 
 
 def discover_skills() -> tuple[Path, ...]:
@@ -307,7 +339,11 @@ def verify_approved_asset(path: Path, relative: Path) -> None:
             )
         lowered = data.lower()
         present_markers = [marker for marker in PROVENANCE_MARKERS if marker in lowered]
-        if relative in GENERATED_MEDIA_ASSETS:
+        if relative in QWEN_GENERATED_ASSETS:
+            # Hashes and recorded model origin are checked above. These files
+            # were not produced by imagegen and have no forged C2PA marker.
+            pass
+        elif relative in GENERATED_MEDIA_ASSETS:
             if not present_markers:
                 fail(f"generated example is missing provenance marker: {relative}")
         elif present_markers:
@@ -363,6 +399,7 @@ def check_tree_hygiene() -> None:
         elif (
             path.suffix.lower() not in ALLOWED_TEXT_SUFFIXES
             and path.name not in ALLOWED_TEXT_FILENAMES
+            and relative not in ALLOWED_MODULE_FILES
         ):
             fail(f"unapproved release file type: {relative}")
 
@@ -468,6 +505,7 @@ def check_collection_index(skills: tuple[Path, ...]) -> None:
 
 def main() -> int:
     check_required_files()
+    load_qwen_assets()
     skills = discover_skills()
     for skill in skills:
         check_skill_frontmatter(skill)
