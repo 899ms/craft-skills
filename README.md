@@ -21,6 +21,26 @@ Craft Skills 把可迁移的专业方法提炼成聚焦的工作流，并为每�
 | [`native-transparent-imagegen`](skills/native-transparent-imagegen/README.md) | 原生生成透明 PNG/WebP，检查未经修改的 Alpha、细边缘和证据；RGB 棋盘格直接失败，禁止用抠图伪造成功。 [阅读中文使用指南与团子胡桃案例](docs/native-transparent-imagegen.zh-CN.md) · [Agent 工作流](skills/native-transparent-imagegen/SKILL.md) | v0.1 实验版 |
 | [`single-path-process-diorama`](skills/single-path-process-diorama/README.md) | 把 3–5 步主线变成单张完整微缩世界，检查顺序、载体变化与阅读路径，不拆节点拼图。[中文指南](docs/single-path-process-diorama.zh-CN.md) · [Agent 工作流](skills/single-path-process-diorama/SKILL.md) | v0.1.1-rc.1 实验候选版 |
 
+## Qwen Image Gen：生图、改图与同人物系列
+
+模型部署好了，却总是画不准、改不动？[qwen-image-gen](skills/qwen-image-gen/README.md) 把需求转成可执行的提示词、参考图关系和尺寸设置，再用原图验收与质量反馈继续修正。
+
+| 天台绿裙 | 草莓蛋糕写真 | 黑白夜归 |
+| --- | --- | --- |
+| [![天台绿裙](skills/qwen-image-gen/assets/examples/portraits/rooftop-green.png)](skills/qwen-image-gen/README.md) | [![草莓蛋糕写真](skills/qwen-image-gen/assets/examples/portraits/strawberry-cake.png)](skills/qwen-image-gen/README.md) | [![黑白夜归](skills/qwen-image-gen/assets/examples/portraits/noir-portrait.png)](skills/qwen-image-gen/README.md) |
+| [提示词](skills/qwen-image-gen/assets/examples/portraits/rooftop-green.txt) | [提示词](skills/qwen-image-gen/assets/examples/portraits/strawberry-cake.txt) | [提示词](skills/qwen-image-gen/assets/examples/portraits/noir-portrait.txt) |
+
+本地 Qwen-Image 1152×2048 样张；点击图片进入 Skill，查看原图、安装方式和用法。
+
+**[安装与使用](skills/qwen-image-gen/README.md#安装与第一次使用) · [四组改写 A/B](skills/qwen-image-gen/assets/examples/ab/README.md) · [完整指南](docs/qwen-image-gen.zh-CN.md) · [Agent 工作流](skills/qwen-image-gen/SKILL.md)**
+
+```text
+使用 $qwen-image-gen，以参考图中的人物生成三张独立写真，每张一个动作。
+先拆解身份、姿势和画幅，再使用我已有的 Qwen 工作流生成并检查原图。
+```
+
+当前 Agent 负责改写，无需另下提示词增强模型。生成需要已有 Qwen 连接。四组研究对照中三组改善，复杂椅子姿态仍失败；样张与离线测试不代表每次生成都能完成要求。
+
 ## 把流程变成一座微缩世界
 
 [![微缩剧场生图 Skill 封面](skills/single-path-process-diorama/assets/examples/cover.png)](skills/single-path-process-diorama/README.md)
