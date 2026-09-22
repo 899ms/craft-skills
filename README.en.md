@@ -22,6 +22,27 @@ Created and curated by [Fini Yang](https://github.com/finiking). Maintained by
 | [`native-transparent-imagegen`](skills/native-transparent-imagegen/README.en.md) | Generate native-transparent PNG/WebP assets and verify untouched alpha, fine edges, and evidence. RGB checkerboards fail, and background removal cannot manufacture success. [Read the guide and Tuanzi/Hutao case](docs/native-transparent-imagegen.md) · [Agent workflow](skills/native-transparent-imagegen/SKILL.md) | v0.1 experimental |
 | [`single-path-process-diorama`](skills/single-path-process-diorama/README.en.md) | Turn a 3–5-step process into one complete miniature world, preserving sequence and meaningful state changes. [Guide](docs/single-path-process-diorama.md) · [Agent workflow](skills/single-path-process-diorama/SKILL.md) | v0.1.1-rc.1 experimental candidate |
 
+## Qwen Image Gen: generation, editing and character series
+
+Deployed the model, but struggling to get the intended image or edit? [qwen-image-gen](skills/qwen-image-gen/README.en.md) turns requests into actionable prompts, reference roles and canvas settings, then uses original-output review and quality feedback to guide revisions.
+
+| Rooftop satin | Strawberry cake | Noir portrait |
+| --- | --- | --- |
+| [![Rooftop satin](skills/qwen-image-gen/assets/examples/portraits/rooftop-green.png)](skills/qwen-image-gen/README.en.md) | [![Strawberry cake](skills/qwen-image-gen/assets/examples/portraits/strawberry-cake.png)](skills/qwen-image-gen/README.en.md) | [![Noir portrait](skills/qwen-image-gen/assets/examples/portraits/noir-portrait.png)](skills/qwen-image-gen/README.en.md) |
+| [Prompt](skills/qwen-image-gen/assets/examples/portraits/rooftop-green.txt) | [Prompt](skills/qwen-image-gen/assets/examples/portraits/strawberry-cake.txt) | [Prompt](skills/qwen-image-gen/assets/examples/portraits/noir-portrait.txt) |
+
+Local Qwen-Image samples at 1152×2048. Click an image for the Skill, full-size originals and usage.
+
+**[Install and try](skills/qwen-image-gen/README.en.md#install-and-try) · [Four rewrite comparisons](skills/qwen-image-gen/assets/examples/ab/README.md) · [Guide](docs/qwen-image-gen.md) · [Agent workflow](skills/qwen-image-gen/SKILL.md)**
+
+```text
+Use $qwen-image-gen to create three separate portraits of the reference person,
+one action per image. Resolve identity, pose and canvas, generate through my
+existing Qwen workflow, and inspect the original outputs.
+```
+
+Your current Agent rewrites prompts; no extra enhancement model is needed. Generation requires an existing Qwen connection. Three of four research pairs improved, while a complex stool pose failed; examples and offline tests do not guarantee every requested image.
+
 ## Turn a process into a miniature world
 
 [![Miniature process-world image Skill](skills/single-path-process-diorama/assets/examples/cover.png)](skills/single-path-process-diorama/README.en.md)
